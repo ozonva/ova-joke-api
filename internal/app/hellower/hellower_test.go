@@ -10,9 +10,7 @@ import (
 
 type ErrorWriter int
 
-var (
-	alwaysWriteError = fmt.Errorf("alwayse write error")
-)
+var alwaysWriteError = fmt.Errorf("alwayse write error")
 
 func (e ErrorWriter) Write(_ []byte) (int, error) {
 	return 0, alwaysWriteError
