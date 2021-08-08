@@ -40,7 +40,6 @@ func ChunkSlice(data []string, sz int) [][]string {
 func FlipMap(m map[string]string) map[string]string {
 	reverseMap := make(map[string]string)
 	for k, v := range m {
-		// @see https://golangschoolozon.slack.com/archives/C029HUD82SF/p1628351401015700?thread_ts=1628190396.013300&cid=C029HUD82SF nolint:lll
 		// when keys duplicates, trigger panic to prevent data overwriting
 		if _, ok := reverseMap[v]; ok {
 			panic(fmt.Errorf("duplicate key %s in reverse map: %w", v, ErrorFlipMapDuplicateKey))
