@@ -1,0 +1,46 @@
+name: Ozon school project tests
+
+on:
+  push:
+    branches:
+      - issue-*
+
+env:
+  GO111MODULE: "on"
+
+jobs:
+  go_get:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.16
+
+      - name: go get
+        run: cd /tmp && go get -v "github.com/${GITHUB_REPOSITORY}"
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Linters
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.41.1
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.16
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Unit tests
+        run: go test -tags=test_unit -v -count=1 -race -timeout=1m ./...
