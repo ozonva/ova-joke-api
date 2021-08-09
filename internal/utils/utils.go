@@ -51,23 +51,24 @@ func FlipMap(m map[string]string) map[string]string {
 	return reverseMap
 }
 
-// FilterByValues returns values from data which occur in slice s.
-func FilterByValues(data []string, values []string) []string {
+// FilterByBlacklist returns all elements from data which not in blackList.
+func FilterByBlacklist(data []string, blackList []string) []string {
 	dict := make(map[string]struct{})
-	for _, v := range values {
+	for _, v := range blackList {
 		dict[v] = struct{}{}
 	}
 
-	return filterBySet(data, dict)
+	return filterBlackSet(data, dict)
 }
 
-func filterBySet(data []string, dict map[string]struct{}) []string {
+func filterBlackSet(data []string, dict map[string]struct{}) []string {
 	return filterByPredicate(data, func(s string) bool {
 		_, ok := dict[s]
-		return ok
+		return !ok
 	})
 }
 
+// filterByPredicate return all elements from data which gives f(data[i]) true.
 func filterByPredicate(data []string, f func(s string) bool) []string {
 	filteredSlice := make([]string, 0)
 

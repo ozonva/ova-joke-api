@@ -41,6 +41,16 @@ func Test_chunkSlice(t *testing.T) {
 			},
 		},
 		{
+			name: "less then chunk size",
+			args: args{
+				data: []string{"one", "two", "three", "four"},
+				sz:   10,
+			},
+			want: [][]string{
+				{"one", "two", "three", "four"},
+			},
+		},
+		{
 			name: "empty",
 			args: args{
 				data: []string{},
@@ -198,7 +208,7 @@ func Test_filterByPredicate(t *testing.T) {
 	}
 }
 
-func Test_filterBySet(t *testing.T) {
+func Test_filterBlackSet(t *testing.T) {
 	type args struct {
 		data []string
 		dict map[string]struct{}
@@ -217,18 +227,18 @@ func Test_filterBySet(t *testing.T) {
 					"four": {},
 				},
 			},
-			want: []string{"two", "four"},
+			want: []string{"one", "three", "five"},
 		},
 		{
 			name: "with duplicate values",
 			args: args{
-				data: []string{"four", "one", "two", "three", "two", "four", "five"},
+				data: []string{"four", "one", "two", "three", "two", "four", "one"},
 				dict: map[string]struct{}{
 					"two":  {},
 					"four": {},
 				},
 			},
-			want: []string{"four", "two", "two", "four"},
+			want: []string{"one", "three", "one"},
 		},
 		{
 			name: "with empty dict",
@@ -236,10 +246,10 @@ func Test_filterBySet(t *testing.T) {
 				data: []string{"one", "two", "three", "four", "five"},
 				dict: map[string]struct{}{},
 			},
-			want: []string{},
+			want: []string{"one", "two", "three", "four", "five"},
 		},
 		{
-			name: "with no values in dict",
+			name: "with no intersections",
 			args: args{
 				data: []string{"one", "two", "three", "four", "five"},
 				dict: map[string]struct{}{
@@ -247,19 +257,30 @@ func Test_filterBySet(t *testing.T) {
 					"seven": {},
 				},
 			},
+			want: []string{"one", "two", "three", "four", "five"},
+		},
+		{
+			name: "with fun intersection",
+			args: args{
+				data: []string{"one", "two", "one", "one", "two"},
+				dict: map[string]struct{}{
+					"one": {},
+					"two": {},
+				},
+			},
 			want: []string{},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := filterBySet(tt.args.data, tt.args.dict); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("filterBySet() = %v, want %v", got, tt.want)
+			if got := filterBlackSet(tt.args.data, tt.args.dict); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("filterBlackSet() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestFilterByValues(t *testing.T) {
+func TestFilterByBlacklist(t *testing.T) {
 	type args struct {
 		data   []string
 		values []string
@@ -273,7 +294,7 @@ func TestFilterByValues(t *testing.T) {
 			name: "simple case",
 			args: args{
 				data:   []string{"one", "two", "three", "four", "five"},
-				values: []string{"one", "two"},
+				values: []string{"three", "four", "five"},
 			},
 			want: []string{"one", "two"},
 		},
@@ -286,12 +307,12 @@ func TestFilterByValues(t *testing.T) {
 			want: []string{},
 		},
 		{
-			name: "empty values",
+			name: "empty black list",
 			args: args{
 				data:   []string{"one", "two", "three", "four", "five"},
 				values: []string{},
 			},
-			want: []string{},
+			want: []string{"one", "two", "three", "four", "five"},
 		},
 		{
 			name: "with duplicates in values",
@@ -299,15 +320,15 @@ func TestFilterByValues(t *testing.T) {
 				data:   []string{"one", "two", "three", "four", "five"},
 				values: []string{"one", "one", "one"},
 			},
-			want: []string{"one"},
+			want: []string{"two", "three", "four", "five"},
 		},
 		{
 			name: "with duplicates in data",
 			args: args{
-				data:   []string{"one", "two", "one", "four", "one"},
+				data:   []string{"one", "two", "one", "four", "one", "five"},
 				values: []string{"one"},
 			},
-			want: []string{"one", "one", "one"},
+			want: []string{"two", "four", "five"},
 		},
 		{
 			name: "with no intersections",
@@ -315,13 +336,21 @@ func TestFilterByValues(t *testing.T) {
 				data:   []string{"one", "two", "three", "four", "five"},
 				values: []string{"six", "seven"},
 			},
+			want: []string{"one", "two", "three", "four", "five"},
+		},
+		{
+			name: "with full intersection",
+			args: args{
+				data:   []string{"one", "two", "one", "two", "one"},
+				values: []string{"one", "two"},
+			},
 			want: []string{},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FilterByValues(tt.args.data, tt.args.values); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("FilterByValues() = %v, want %v", got, tt.want)
+			if got := FilterByBlacklist(tt.args.data, tt.args.values); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("FilterByBlacklist() = %v, want %v", got, tt.want)
 			}
 		})
 	}
