@@ -8,11 +8,9 @@ import (
 	"testing"
 )
 
-type ErrorWriter int
+type ErrorWriter struct{}
 
-var (
-	alwaysWriteError = fmt.Errorf("alwayse write error")
-)
+var alwaysWriteError = fmt.Errorf("alwayse write error")
 
 func (e ErrorWriter) Write(_ []byte) (int, error) {
 	return 0, alwaysWriteError
@@ -93,7 +91,7 @@ func TestSayHelloFrom(t *testing.T) {
 	}
 
 	t.Run("Fail writer", func(t *testing.T) {
-		w := ErrorWriter(42)
+		w := ErrorWriter{}
 
 		err := SayHelloFrom(w, "Chuck is not the best")
 		if err == nil {
