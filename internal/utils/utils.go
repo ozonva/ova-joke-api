@@ -14,7 +14,7 @@ func minInt(x, y int) int {
 	return x
 }
 
-// ChunkSlice split data into parts of sz length, last part may have length less then sz.
+// ChunkSlice split data into parts of sz length, last part's length may be less than sz.
 func ChunkSlice(data []string, sz int) [][]string {
 	if sz < 1 {
 		sz = len(data)
@@ -35,7 +35,7 @@ func ChunkSlice(data []string, sz int) [][]string {
 	return result
 }
 
-// FlipMap returns new map where key and values swapped. When given map m has several save values by
+// FlipMap returns new map where key and values swapped. When given map m has several same values by
 // different keys it's panic.
 func FlipMap(m map[string]string) map[string]string {
 	reverseMap := make(map[string]string)

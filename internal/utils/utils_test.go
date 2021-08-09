@@ -59,6 +59,14 @@ func Test_chunkSlice(t *testing.T) {
 			want: [][]string{},
 		},
 		{
+			name: "nil slice",
+			args: args{
+				data: nil,
+				sz:   10,
+			},
+			want: [][]string{},
+		},
+		{
 			name: "negative sz",
 			args: args{
 				data: []string{"one", "two", "three", "four"},
@@ -305,6 +313,22 @@ func TestFilterByBlacklist(t *testing.T) {
 				values: []string{"one", "two"},
 			},
 			want: []string{},
+		},
+		{
+			name: "nil data",
+			args: args{
+				data:   nil,
+				values: []string{"one", "two"},
+			},
+			want: []string{},
+		},
+		{
+			name: "nil black list",
+			args: args{
+				data:   []string{"one", "two"},
+				values: nil,
+			},
+			want: []string{"one", "two"},
 		},
 		{
 			name: "empty black list",
