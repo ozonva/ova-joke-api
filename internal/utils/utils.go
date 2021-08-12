@@ -17,19 +17,19 @@ func minInt(x, y int) int {
 // ChunkSlice split data into parts of sz length, last part's length may be less than sz.
 func ChunkSlice(data []string, sz int) [][]string {
 	if sz < 1 {
+		if len(data) == 0 {
+			return [][]string{}
+		}
+
 		sz = len(data)
 	}
 
-	chunksCnt := len(data) / sz
-	if len(data)%sz > 0 {
-		chunksCnt++
-	}
+	// both sz and len(data) != 0
+	chunksCnt := (len(data) + sz - 1) / sz
 
 	result := make([][]string, 0, chunksCnt)
-	for i := 0; i*sz < len(data); i++ {
-		chunk := make([]string, minInt(sz, len(data)-i*sz))
-		copy(chunk, data[i*sz:minInt((i+1)*sz, len(data))])
-		result = append(result, chunk)
+	for i := 0; i < len(data); i += sz {
+		result = append(result, data[i:minInt(i+sz, len(data))])
 	}
 
 	return result

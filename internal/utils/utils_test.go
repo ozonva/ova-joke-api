@@ -59,6 +59,14 @@ func Test_chunkSlice(t *testing.T) {
 			want: [][]string{},
 		},
 		{
+			name: "empty and zero sz",
+			args: args{
+				data: []string{},
+				sz:   0,
+			},
+			want: [][]string{},
+		},
+		{
 			name: "nil slice",
 			args: args{
 				data: nil,
