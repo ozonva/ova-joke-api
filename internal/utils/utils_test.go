@@ -166,10 +166,10 @@ func TestFlipMap(t *testing.T) {
 			FlipMap(given)
 		}()
 
-		if !errors.Is(actualErr, ErrorFlipMapDuplicateKey) {
+		if !errors.Is(actualErr, ErrorDuplicateKey) {
 			t.Errorf(
 				"FlipMap() panic returns unexpected error type: want=%v, got=%v",
-				ErrorFlipMapDuplicateKey,
+				ErrorDuplicateKey,
 				actualErr,
 			)
 		}

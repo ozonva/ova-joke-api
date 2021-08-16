@@ -1,0 +1,450 @@
+[
+    {
+        "id": 1,
+        "text": "Chuck Norris can divide by zero.",
+        "author": {
+            "id": 15,
+            "name": "Lucas"
+        }
+    },
+    {
+        "id": 2,
+        "text": "Chuck Norris can delete the Recycling Bin.",
+        "author": {
+            "id": 7,
+            "name": "Elijah"
+        }
+    },
+    {
+        "id": 3,
+        "text": "Death once had a near-Chuck-Norris experience.",
+        "author": {
+            "id": 15,
+            "name": "Lucas"
+        }
+    },
+    {
+        "id": 4,
+        "text": "Chuck Norris knows Victoria’s secret.",
+        "author": {
+            "id": 7,
+            "name": "Elijah"
+        }
+    },
+    {
+        "id": 5,
+        "text": "When Chuck Norris was in middle school, his English teacher assigned an essay: “What is courage?” He received an A-plus for turning in a blank page with only his name at the top.",
+        "author": {
+            "id": 6,
+            "name": "Ava"
+        }
+    },
+    {
+        "id": 6,
+        "text": "When God said, “Let there be LIGHT!” Chuck Norris said, “Say, please.”",
+        "author": {
+            "id": 12,
+            "name": "Amelia"
+        }
+    },
+    {
+        "id": 7,
+        "text": "Chuck Norris can kill two stones with one bird.",
+        "author": {
+            "id": 19,
+            "name": "Alexander"
+        }
+    },
+    {
+        "id": 8,
+        "text": "Chuck Norris destroyed the periodic table because Chuck Norris only recognizes the element of surprise.",
+        "author": {
+            "id": 5,
+            "name": "Oliver"
+        }
+    },
+    {
+        "id": 9,
+        "text": "There is no chin behind Chuck Norris’ beard. There is only another fist.",
+        "author": {
+            "id": 15,
+            "name": "Lucas"
+        }
+    },
+    {
+        "id": 10,
+        "text": "Chuck Norris can slam a revolving door.",
+        "author": {
+            "id": 17,
+            "name": "Henry"
+        }
+    },
+    {
+        "id": 11,
+        "text": "When Chuck Norris does a push-up, he isn’t lifting himself up, he’s pushing the Earth down.",
+        "author": {
+            "id": 10,
+            "name": "Sophia"
+        }
+    },
+    {
+        "id": 12,
+        "text": "Chuck Norris doesn’t wear a watch. He simply decides what time it is.",
+        "author": {
+            "id": 12,
+            "name": "Amelia"
+        }
+    },
+    {
+        "id": 13,
+        "text": "Chuck Norris built the hospital he was born in.",
+        "author": {
+            "id": 2,
+            "name": "Olivia"
+        }
+    },
+    {
+        "id": 14,
+        "text": "When Chuck Norris turned 18, his parents moved out.",
+        "author": {
+            "id": 17,
+            "name": "Henry"
+        }
+    },
+    {
+        "id": 15,
+        "text": "Chuck Norris doesn’t sleep. He waits.",
+        "author": {
+            "id": 3,
+            "name": "Noah"
+        }
+    },
+    {
+        "id": 16,
+        "text": "Chuck Norris has been to Mars. That’s why there are no signs of life there.",
+        "author": {
+            "id": 6,
+            "name": "Ava"
+        }
+    },
+    {
+        "id": 17,
+        "text": "Chuck Norris once ate a Rubik’s Cube and pooped it out solved.",
+        "author": {
+            "id": 16,
+            "name": "Mia"
+        }
+    },
+    {
+        "id": 18,
+        "text": "The flu has to get Chuck Norris shots every year.",
+        "author": {
+            "id": 5,
+            "name": "Oliver"
+        }
+    },
+    {
+        "id": 19,
+        "text": "The Dead Sea was alive before Chuck Norris swam there.",
+        "author": {
+            "id": 12,
+            "name": "Amelia"
+        }
+    },
+    {
+        "id": 20,
+        "text": "Chuck Norris doesn’t fill out online forms because he doesn’t submit.",
+        "author": {
+            "id": 18,
+            "name": "Evelyn"
+        }
+    },
+    {
+        "id": 21,
+        "text": "Chuck Norris starred in Star Wars. He was the force.",
+        "author": {
+            "id": 3,
+            "name": "Noah"
+        }
+    },
+    {
+        "id": 22,
+        "text": "Chuck Norris likes his meat so rare he only eats unicorns.",
+        "author": {
+            "id": 16,
+            "name": "Mia"
+        }
+    },
+    {
+        "id": 23,
+        "text": "Chuck Norris doesn’t read books. He stares them down until he gets the information he wants.",
+        "author": {
+            "id": 15,
+            "name": "Lucas"
+        }
+    },
+    {
+        "id": 24,
+        "text": "Chuck Norris has a mug of nails instead of coffee in the morning.",
+        "author": {
+            "id": 20,
+            "name": "Harper"
+        }
+    },
+    {
+        "id": 25,
+        "text": "If Chuck Norris were to travel to an alternate dimension in which there was another Chuck Norris and they both fought, they would both win.",
+        "author": {
+            "id": 14,
+            "name": "Isabella"
+        }
+    },
+    {
+        "id": 26,
+        "text": "Chuck Norris can strangle you with a cordless phone.",
+        "author": {
+            "id": 20,
+            "name": "Harper"
+        }
+    },
+    {
+        "id": 27,
+        "text": "Chuck Norris can kill your imaginary friends.",
+        "author": {
+            "id": 7,
+            "name": "Elijah"
+        }
+    },
+    {
+        "id": 28,
+        "text": "Chuck Norris can hear sign language.",
+        "author": {
+            "id": 20,
+            "name": "Harper"
+        }
+    },
+    {
+        "id": 29,
+        "text": "Chuck Norris tells Simon what to do.",
+        "author": {
+            "id": 2,
+            "name": "Olivia"
+        }
+    },
+    {
+        "id": 30,
+        "text": "Chuck Norris lost his virginity before his dad did.",
+        "author": {
+            "id": 2,
+            "name": "Olivia"
+        }
+    },
+    {
+        "id": 31,
+        "text": "If it looks like chicken, tastes like chicken, and feels like chicken, but Chuck Norris says it’s beef, it’s beef.",
+        "author": {
+            "id": 20,
+            "name": "Harper"
+        }
+    },
+    {
+        "id": 32,
+        "text": "Chuck Norris does not own a stove, oven, or microwave, because revenge is a dish best served cold.",
+        "author": {
+            "id": 6,
+            "name": "Ava"
+        }
+    },
+    {
+        "id": 33,
+        "text": "Chuck Norris has never blinked in his entire life. Never.",
+        "author": {
+            "id": 17,
+            "name": "Henry"
+        }
+    },
+    {
+        "id": 34,
+        "text": "Chuck Norris can speak braille.",
+        "author": {
+            "id": 2,
+            "name": "Olivia"
+        }
+    },
+    {
+        "id": 35,
+        "text": "Chuck Norris once had a heart attack. His heart lost.",
+        "author": {
+            "id": 16,
+            "name": "Mia"
+        }
+    },
+    {
+        "id": 36,
+        "text": "Chuck Norris doesn’t cheat death. He wins fair and square.",
+        "author": {
+            "id": 13,
+            "name": "Benjamin"
+        }
+    },
+    {
+        "id": 37,
+        "text": "Chuck Norris is the reason Waldo is hiding.",
+        "author": {
+            "id": 3,
+            "name": "Noah"
+        }
+    },
+    {
+        "id": 38,
+        "text": "Chuck Norris sleeps with a pillow under his gun.",
+        "author": {
+            "id": 20,
+            "name": "Harper"
+        }
+    },
+    {
+        "id": 39,
+        "text": "MC Hammer learned the hard way that Chuck Norris can touch this.",
+        "author": {
+            "id": 19,
+            "name": "Alexander"
+        }
+    },
+    {
+        "id": 40,
+        "text": "Chuck refers to himself in the fourth person.",
+        "author": {
+            "id": 16,
+            "name": "Mia"
+        }
+    },
+    {
+        "id": 41,
+        "text": "The only time Chuck Norris was ever wrong was when he thought he had made a mistake.",
+        "author": {
+            "id": 5,
+            "name": "Oliver"
+        }
+    },
+    {
+        "id": 42,
+        "text": "A bulletproof vest wears Chuck Norris for protection.",
+        "author": {
+            "id": 15,
+            "name": "Lucas"
+        }
+    },
+    {
+        "id": 43,
+        "text": "Chuck Norris once won an underwater breathing contest with a fish.",
+        "author": {
+            "id": 18,
+            "name": "Evelyn"
+        }
+    },
+    {
+        "id": 44,
+        "text": "Chuck Norris narrates Morgan Freeman’s life.",
+        "author": {
+            "id": 14,
+            "name": "Isabella"
+        }
+    },
+    {
+        "id": 45,
+        "text": "The Great Wall of China was created to keep Chuck Norris out. It didn’t work.",
+        "author": {
+            "id": 7,
+            "name": "Elijah"
+        }
+    },
+    {
+        "id": 46,
+        "text": "It takes Chuck Norris 20 minutes to watch 60 Minutes.",
+        "author": {
+            "id": 9,
+            "name": "William"
+        }
+    },
+    {
+        "id": 47,
+        "text": "Chuck Norris once ordered a steak in a restaurant. The steak did what it was told.",
+        "author": {
+            "id": 9,
+            "name": "William"
+        }
+    },
+    {
+        "id": 48,
+        "text": "Bigfoot claims he once saw Chuck Norris.",
+        "author": {
+            "id": 17,
+            "name": "Henry"
+        }
+    },
+    {
+        "id": 49,
+        "text": "Chuck Norris can sit in the corner of a round room.",
+        "author": {
+            "id": 15,
+            "name": "Lucas"
+        }
+    },
+    {
+        "id": 50,
+        "text": "Chuck Norris can make a slinky go upstairs.",
+        "author": {
+            "id": 4,
+            "name": "Emma"
+        }
+    },
+    {
+        "id": 51,
+        "text": "Chuck Norris can squeeze orange juice out of a lemon.",
+        "author": {
+            "id": 14,
+            "name": "Isabella"
+        }
+    },
+    {
+        "id": 52,
+        "text": "Chuck Norris can clap with one hand.",
+        "author": {
+            "id": 10,
+            "name": "Sophia"
+        }
+    },
+    {
+        "id": 53,
+        "text": "Chuck Norris invented airplanes because he was tired of being the only person who could fly.",
+        "author": {
+            "id": 2,
+            "name": "Olivia"
+        }
+    },
+    {
+        "id": 54,
+        "text": "Freddy Krueger has nightmares about Chuck Norris.",
+        "author": {
+            "id": 11,
+            "name": "James"
+        }
+    },
+    {
+        "id": 55,
+        "text": "Chuck Norris’ cowboy boots are made from real cowboys.",
+        "author": {
+            "id": 8,
+            "name": "Charlotte"
+        }
+    },
+    {
+        "id": 56,
+        "text": "Chuck Norris used to beat the shit out of his shadow because it was following too close behind him. It now stands back a safe 30 feet.",
+        "author": {
+            "id": 6,
+            "name": "Ava"
+        }
+    }
+]

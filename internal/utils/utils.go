@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-var ErrorFlipMapDuplicateKey = errors.New("duplicate key")
+var ErrorDuplicateKey = errors.New("duplicate key")
 
 func minInt(x, y int) int {
 	if x > y {
@@ -42,7 +42,7 @@ func FlipMap(m map[string]string) map[string]string {
 	for k, v := range m {
 		// when keys duplicates, trigger panic to prevent data overwriting
 		if _, ok := reverseMap[v]; ok {
-			panic(fmt.Errorf("duplicate key %s in reverse map: %w", v, ErrorFlipMapDuplicateKey))
+			panic(fmt.Errorf("duplicate key %s in reverse map: %w", v, ErrorDuplicateKey))
 		}
 
 		reverseMap[v] = k
