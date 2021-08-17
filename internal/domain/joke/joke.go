@@ -6,7 +6,7 @@ import (
 	"github.com/ozonva/ova-joke-api/internal/domain/author"
 )
 
-// compile time interface check
+// compile time interface check.
 var _ fmt.Stringer = Joke{}
 
 type (

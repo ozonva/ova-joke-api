@@ -2,7 +2,7 @@ package author
 
 import "fmt"
 
-// compile time interface check
+// compile time interface check.
 var _ fmt.Stringer = Author{}
 
 type ID = uint64
