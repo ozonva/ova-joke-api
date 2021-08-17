@@ -6,6 +6,9 @@ import (
 	"github.com/ozonva/ova-joke-api/internal/domain/author"
 )
 
+// compile time interface check
+var _ fmt.Stringer = Joke{}
+
 type (
 	ID         = uint64
 	Collection = []*Joke
@@ -17,7 +20,7 @@ type Joke struct {
 	Author *author.Author `json:"author,omitempty"`
 }
 
-func String(j Joke) string {
+func (j Joke) String() string {
 	if j.Text == "" {
 		return ""
 	}

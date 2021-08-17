@@ -2,6 +2,9 @@ package author
 
 import "fmt"
 
+// compile time interface check
+var _ fmt.Stringer = Author{}
+
 type ID = uint64
 
 type Author struct {
