@@ -26,24 +26,21 @@ func init() {
 	flag.StringVar(&outFile, "out", "tools/jokegen/generated/jokes.json", "file with list of jokes objects")
 }
 
-// closeFile with return value check.
-func closeFile(f *os.File, name string) {
-	if err := f.Close(); err != nil {
-		panic(fmt.Errorf("unable to close file %q: %w", name, err))
-	}
-}
-
 // readFile given by path into []string with line by line split.
-func readFile(path string) ([]string, error) {
-	var result []string
-
+func readFile(path string) (result []string, rerr error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, fmt.Errorf("unable to open %s, %w", path, err)
 	}
 
-	// it's better cleanup resources as soon as possible and don't wait till function ends
-	defer closeFile(f, path)
+	defer func() {
+		if err := f.Close(); err != nil {
+			// not overwrite open/read error with close one
+			if rerr == nil {
+				rerr = err
+			}
+		}
+	}()
 
 	s := bufio.NewScanner(f)
 	for s.Scan() {
