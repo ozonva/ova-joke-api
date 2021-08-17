@@ -24,6 +24,20 @@ func TestString(t *testing.T) {
 			want: "",
 		},
 		{
+			name: "only ID",
+			args: args{
+				a: Author{ID: 42},
+			},
+			want: "ID: 42",
+		},
+		{
+			name: "only Name",
+			args: args{
+				a: Author{Name: "lev1828"},
+			},
+			want: "Name: \"lev1828\"",
+		},
+		{
 			name: "simple",
 			args: args{
 				a: Author{
@@ -31,12 +45,12 @@ func TestString(t *testing.T) {
 					Name: "lev1828",
 				},
 			},
-			want: "lev1828",
+			want: "ID: 42, Name: \"lev1828\"",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := String(tt.args.a); got != tt.want {
+			if got := tt.args.a.String(); got != tt.want {
 				t.Errorf("String() = %v, want %v", got, tt.want)
 			}
 		})
@@ -72,8 +86,8 @@ func TestCopyright(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Copyright(tt.args.a); got != tt.want {
-				t.Errorf("Copyright() = %v, want %v", got, tt.want)
+			if got := tt.args.a.Copyright(); got != tt.want {
+				t.Errorf("a.Copyright() = %v, want %v", got, tt.want)
 			}
 		})
 	}

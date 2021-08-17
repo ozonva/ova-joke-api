@@ -22,7 +22,7 @@ func String(j Joke) string {
 		return ""
 	}
 
-	if copyright := author.Copyright(*j.Author); copyright != "" {
+	if copyright := j.Author.Copyright(); copyright != "" {
 		return fmt.Sprintf("%q %s", j.Text, copyright)
 	}
 

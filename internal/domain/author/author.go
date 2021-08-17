@@ -9,13 +9,25 @@ type Author struct {
 	Name string `json:"name"`
 }
 
-func String(a Author) string {
-	return a.Name
+func (a Author) String() string {
+	if a.ID == 0 {
+		if a.Name == "" {
+			return ""
+		}
+
+		return fmt.Sprintf("Name: %q", a.Name)
+	}
+
+	if a.Name == "" {
+		return fmt.Sprintf("ID: %d", a.ID)
+	}
+
+	return fmt.Sprintf("ID: %d, Name: %q", a.ID, a.Name)
 }
 
-func Copyright(a Author) string {
-	if author := String(a); author != "" {
-		return fmt.Sprintf("©%s", String(a))
+func (a Author) Copyright() string {
+	if a.Name != "" {
+		return fmt.Sprintf("©%s", a.Name)
 	}
 
 	return ""
