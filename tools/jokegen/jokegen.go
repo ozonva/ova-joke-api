@@ -93,7 +93,6 @@ func writeJokesAsJSON(path string, data []joke.Joke) error {
 	return nil
 }
 
-//go:generate go run ./tools/jokegen/jokegen.go -jokes=./tools/jokegen/jokes.txt -names=./tools/jokegen/names.txt -out=./tools/jokegen/generated/jokes.json
 func main() {
 	flag.Parse()
 
