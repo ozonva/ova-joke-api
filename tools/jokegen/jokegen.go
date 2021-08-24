@@ -68,19 +68,19 @@ func makeUserCollection(names []string) []*author.Author {
 }
 
 // makeJokeCollection generates joke.Joke objects with texts from jokes slice and authors from ac.
-func makeJokeCollection(jokes []string, ac []*author.Author) joke.Collection {
+func makeJokeCollection(jokes []string, ac []*author.Author) []joke.Joke {
 	rand.Seed(time.Now().UnixNano())
 
-	jresult := make(joke.Collection, 0, len(jokes))
+	jresult := make([]joke.Joke, 0, len(jokes))
 	for i, text := range jokes {
-		jresult = append(jresult, joke.New(joke.ID(i+1), text, ac[rand.Intn(len(ac))])) // nolint:gosec
+		jresult = append(jresult, *joke.New(joke.ID(i+1), text, ac[rand.Intn(len(ac))])) // nolint:gosec
 	}
 
 	return jresult
 }
 
-// writeJokesAsJSON serialize joke.Collection into JSON and write to file.
-func writeJokesAsJSON(path string, data joke.Collection) error {
+// writeJokesAsJSON serialize []joke.Joke into JSON and write to file.
+func writeJokesAsJSON(path string, data []joke.Joke) error {
 	content, err := json.MarshalIndent(data, "", "    ")
 	if err != nil {
 		return fmt.Errorf("marshal failed: %w", err)
@@ -93,6 +93,7 @@ func writeJokesAsJSON(path string, data joke.Collection) error {
 	return nil
 }
 
+//go:generate go run ./tools/jokegen/jokegen.go -jokes=./tools/jokegen/jokes.txt -names=./tools/jokegen/names.txt -out=./tools/jokegen/generated/jokes.json
 func main() {
 	flag.Parse()
 
