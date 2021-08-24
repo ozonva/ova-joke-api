@@ -3,17 +3,18 @@
 package utils
 
 import (
-	"reflect"
 	"strconv"
 	"testing"
 
 	"github.com/ozonva/ova-joke-api/internal/domain/joke"
+
+	"github.com/stretchr/testify/require"
 )
 
 func makeJokeCollection(sz int) joke.Collection {
 	jokes := make(joke.Collection, 0, sz)
-	for i := 0; i < 10; i++ {
-		jokes = append(jokes, joke.New(joke.ID(i+1), "joke#"+strconv.Itoa(i), nil))
+	for i := 0; i < sz; i++ {
+		jokes = append(jokes, joke.New(joke.ID(i+1), "joke#"+strconv.Itoa(i+1), nil))
 	}
 
 	return jokes
@@ -110,9 +111,7 @@ func TestSplitToBulks(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SplitToBulks(tt.args.c, tt.args.sz); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("SplitToBulks() = %v, want %v", got, tt.want)
-			}
+			require.Equal(t, tt.want, SplitToBulks(tt.args.c, tt.args.sz))
 		})
 	}
 }
@@ -159,12 +158,13 @@ func TestBuildIndex(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := BuildIndex(tt.args.c)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("BuildIndex() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("BuildIndex() got = %v, want %v", got, tt.want)
+
+			if tt.wantErr {
+				require.Error(t, err)
+				require.Nil(t, got)
+			} else {
+				require.NoError(t, err)
+				require.Equal(t, tt.want, got)
 			}
 		})
 	}

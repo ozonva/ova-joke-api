@@ -3,8 +3,9 @@
 package author
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestString(t *testing.T) {
@@ -50,9 +51,7 @@ func TestString(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.args.a.String(); got != tt.want {
-				t.Errorf("String() = %v, want %v", got, tt.want)
-			}
+			require.Equal(t, tt.want, tt.args.a.String())
 		})
 	}
 }
@@ -86,9 +85,7 @@ func TestCopyright(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.args.a.Copyright(); got != tt.want {
-				t.Errorf("a.Copyright() = %v, want %v", got, tt.want)
-			}
+			require.Equal(t, tt.want, tt.args.a.Copyright())
 		})
 	}
 }
@@ -125,9 +122,7 @@ func TestNew(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := New(tt.args.id, tt.args.name); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("New() = %v, want %v", got, tt.want)
-			}
+			require.Equal(t, tt.want, New(tt.args.id, tt.args.name))
 		})
 	}
 }

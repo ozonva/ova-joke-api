@@ -3,9 +3,10 @@
 package utils
 
 import (
-	"errors"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func Test_chunkSlice(t *testing.T) {
@@ -97,9 +98,7 @@ func Test_chunkSlice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := ChunkSlice(tt.args.data, tt.args.sz); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("chunkSlice() = %v, want %v", got, tt.want)
-			}
+			require.Equal(t, tt.want, ChunkSlice(tt.args.data, tt.args.sz))
 		})
 	}
 }
@@ -136,11 +135,10 @@ func TestFlipMap(t *testing.T) {
 			want: map[string]string{},
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FlipMap(tt.args.m); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("FlipMap() = %v, want %v", got, tt.want)
-			}
+			require.Equal(t, tt.want, FlipMap(tt.args.m))
 		})
 	}
 
@@ -166,13 +164,7 @@ func TestFlipMap(t *testing.T) {
 			FlipMap(given)
 		}()
 
-		if !errors.Is(actualErr, ErrorDuplicateKey) {
-			t.Errorf(
-				"FlipMap() panic returns unexpected error type: want=%v, got=%v",
-				ErrorDuplicateKey,
-				actualErr,
-			)
-		}
+		require.ErrorIs(t, actualErr, ErrorDuplicateKey)
 	})
 }
 
@@ -289,9 +281,7 @@ func Test_filterBlackSet(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := filterBlackSet(tt.args.data, tt.args.dict); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("filterBlackSet() = %v, want %v", got, tt.want)
-			}
+			require.Equal(t, tt.want, filterBlackSet(tt.args.data, tt.args.dict))
 		})
 	}
 }
@@ -379,11 +369,10 @@ func TestFilterByBlacklist(t *testing.T) {
 			want: []string{},
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FilterByBlacklist(tt.args.data, tt.args.values); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("FilterByBlacklist() = %v, want %v", got, tt.want)
-			}
+			require.Equal(t, tt.want, FilterByBlacklist(tt.args.data, tt.args.values))
 		})
 	}
 }

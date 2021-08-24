@@ -4,10 +4,11 @@ package joke
 
 import (
 	"encoding/json"
-	"reflect"
 	"testing"
 
 	"github.com/ozonva/ova-joke-api/internal/domain/author"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestString(t *testing.T) {
@@ -56,9 +57,7 @@ func TestString(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.args.j.String(); got != tt.want {
-				t.Errorf("String() = %v, want %v", got, tt.want)
-			}
+			require.Equal(t, tt.want, tt.args.j.String())
 		})
 	}
 }
@@ -110,12 +109,9 @@ func TestMarshal(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := json.Marshal(tt.args.j)
-			if err != nil {
-				t.Errorf("Marshal() returns error %v", err)
-			}
-			if string(got) != tt.want {
-				t.Errorf("Marshal() = %v,\nwant %v", string(got), tt.want)
-			}
+
+			require.NoError(t, err)
+			require.Equal(t, tt.want, string(got))
 		})
 	}
 }
@@ -170,9 +166,7 @@ func TestNew(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := New(tt.args.id, tt.args.text, tt.args.a); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("New() = %v, want %v", got, tt.want)
-			}
+			require.Equal(t, tt.want, New(tt.args.id, tt.args.text, tt.args.a))
 		})
 	}
 }
