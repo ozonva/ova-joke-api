@@ -21,7 +21,7 @@ func makeJokeCollection(sz int) []joke.Joke {
 	}
 	jokes := make([]joke.Joke, 0, sz)
 	for i := 0; i < sz; i++ {
-		jokes = append(jokes, *joke.New(joke.ID(i+1), "joke#"+strconv.Itoa(i), a))
+		jokes = append(jokes, *joke.New(joke.ID(i+1), "joke#"+strconv.Itoa(i+1), a))
 	}
 
 	return jokes
