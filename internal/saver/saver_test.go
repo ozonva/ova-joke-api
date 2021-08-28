@@ -29,53 +29,51 @@ func makeJokeCollection(sz int) []joke.Joke {
 	return jokes
 }
 
-func callSaveOnJokes(s Saver, jokes []joke.Joke) {
+func callSaveOnJokes(s *JokeSaver, jokes []joke.Joke) {
 	for _, jj := range jokes {
 		s.Save(jj)
 	}
 }
 
-// Return internal buffer of Saver for assert.
+// Return internal buffer of JokeSaver for assert.
 // Race detector prevent concurrent access and fail tests asserts.
-func getBuffer(s Saver) []joke.Joke {
-	js := s.(*jokeSaver)
-
-	js.mx.Lock()
-	defer js.mx.Unlock()
-
-	return js.buffer
+func getBuffer(s *JokeSaver) []joke.Joke {
+	s.mx.Lock()
+	defer s.mx.Unlock()
+	return s.buffer
 }
 
 // Set internal saver buffer to zero length.
 // Race detector prevent concurrent access and fail tests asertation.
-func resetBuffer(s Saver) {
-	js := s.(*jokeSaver)
+func resetBuffer(s *JokeSaver) {
+	s.mx.Lock()
+	defer s.mx.Unlock()
 
-	js.mx.Lock()
-	defer js.mx.Unlock()
-
-	js.buffer = js.buffer[:0]
+	s.buffer = s.buffer[:0]
 }
 
 var _ = Describe("Saver", func() {
 	jokeFixtures := makeJokeCollection(10)
 	var (
+		clc *clock.Mock
+
 		ctrl        *gomock.Controller
 		mockFlusher *mock_flusher.MockFlusher
 
-		clc    *clock.Mock
-		jSaver Saver
-
-		jokes []joke.Joke
+		jSaver *JokeSaver
+		jokes  []joke.Joke
 	)
 
 	BeforeEach(func() {
+		clc = clock.NewMock()
+		getClock = func() clock.Clock {
+			return clc
+		}
+
 		ctrl = gomock.NewController(GinkgoT())
 		mockFlusher = mock_flusher.NewMockFlusher(ctrl)
 
-		clc = clock.NewMock()
-		jSaver, _ = NewSaver(context.TODO(), 3, mockFlusher, clc.Ticker(200*time.Millisecond))
-
+		jSaver = NewSaver(context.TODO(), 3, mockFlusher, 200*time.Millisecond)
 		jokes = jokeFixtures[:0]
 	})
 
