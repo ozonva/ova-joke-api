@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package ozonva.ova_joke_api;
+
+option go_package = "github.com/ozonva/ova-joke-api/pkg/ova-joke-api;ova_joke_api";
+
+// JokeAPI service for working with jokes.
+service JokeService {
+  // CreateJokeV1 create new joke entity.
+  rpc CreateJokeV1(CreateJokeRequestV1) returns (CreateJokeResponseV1) {
+  }
+
+  // DescribeJokeV1 show full information about Joke entity.
+  rpc DescribeJokeV1(DescribeJokeRequestV1) returns (DescribeJokeResponseV1) {
+  }
+
+  // ListJokeV1 show list of jokes.
+  rpc ListJokeV1(ListJokeRequestV1) returns (ListJokeResponseV1) {
+  }
+
+  // RemoveJokeV1 delete joke from storage.
+  rpc RemoveJokeV1(RemoveJokeRequestV1) returns (RemoveJokeResponseV1) {
+  }
+}
+
+message Author {
+  int64 id = 1;
+  string name = 2;
+}
+
+message Joke {
+  int64 id = 1;
+  string text = 2;
+  Author author = 3;
+}
+
+message CreateJokeRequestV1 {
+  string text = 2;
+  Author author = 3;
+}
+
+message CreateJokeResponseV1 {
+  int64 id = 1;
+}
+
+message DescribeJokeRequestV1 {
+  int64 id = 1;
+}
+
+message DescribeJokeResponseV1 {
+  int64 id = 1;
+  string text = 2;
+  Author author = 3;
+}
+
+message ListJokeRequestV1 {
+}
+
+message ListJokeResponseV1 {
+  repeated Joke jokes = 1;
+}
+
+message RemoveJokeRequestV1 {
+  int64 id = 1;
+}
+
+message RemoveJokeResponseV1 {
+}
