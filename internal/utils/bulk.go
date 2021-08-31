@@ -3,14 +3,14 @@ package utils
 import (
 	"fmt"
 
-	"github.com/ozonva/ova-joke-api/internal/domain/joke"
+	"github.com/ozonva/ova-joke-api/internal/models"
 )
 
 // SplitToBulks chunk given collection to slices up to sz length.
-func SplitToBulks(c []joke.Joke, sz int) [][]joke.Joke {
+func SplitToBulks(c []models.Joke, sz int) [][]models.Joke {
 	if sz < 1 {
 		if len(c) == 0 {
-			return [][]joke.Joke{}
+			return [][]models.Joke{}
 		}
 
 		sz = len(c)
@@ -19,7 +19,7 @@ func SplitToBulks(c []joke.Joke, sz int) [][]joke.Joke {
 	// both sz and len(c) != 0
 	chunksCnt := (len(c) + sz - 1) / sz
 
-	result := make([][]joke.Joke, 0, chunksCnt)
+	result := make([][]models.Joke, 0, chunksCnt)
 	for i := 0; i < len(c); i += sz {
 		result = append(result, c[i:minInt(i+sz, len(c))])
 	}
@@ -28,11 +28,11 @@ func SplitToBulks(c []joke.Joke, sz int) [][]joke.Joke {
 }
 
 // BuildIndex convert given collection to map with id as key and collection value as value.
-func BuildIndex(c []joke.Joke) (map[joke.ID]joke.Joke, error) {
-	result := make(map[joke.ID]joke.Joke)
+func BuildIndex(c []models.Joke) (map[models.JokeID]models.Joke, error) {
+	result := make(map[models.JokeID]models.Joke)
 	for i := range c {
 		if _, ok := result[c[i].ID]; ok {
-			return nil, fmt.Errorf("%w, value with joke.ID = %d already exists", ErrorDuplicateKey, c[i].ID)
+			return nil, fmt.Errorf("%w, value with joke.JokeID = %d already exists", ErrorDuplicateKey, c[i].ID)
 		}
 		result[c[i].ID] = c[i]
 	}
