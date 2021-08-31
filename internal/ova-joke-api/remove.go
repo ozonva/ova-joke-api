@@ -6,6 +6,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 
+	"github.com/ozonva/ova-joke-api/internal/models"
 	pb "github.com/ozonva/ova-joke-api/pkg/ova-joke-api"
 )
 
