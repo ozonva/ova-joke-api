@@ -86,7 +86,7 @@ func writeJokesAsJSON(path string, data []joke.Joke) error {
 		return fmt.Errorf("marshal failed: %w", err)
 	}
 
-	if err := ioutil.WriteFile(path, content, 0600); err != nil {
+	if err := ioutil.WriteFile(path, content, 0o600); err != nil {
 		return fmt.Errorf("write into file %q failed: %w", path, err)
 	}
 
