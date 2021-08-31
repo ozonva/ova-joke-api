@@ -14,7 +14,6 @@ require (
 	go.uber.org/goleak v1.1.10
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
 	golang.org/x/net v0.0.0-20210825183410-e898025ed96a // indirect
-	go.uber.org/goleak v1.1.10
 	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/grpc v1.40.0

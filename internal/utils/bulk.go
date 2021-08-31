@@ -32,7 +32,7 @@ func BuildIndex(c []models.Joke) (map[models.JokeID]models.Joke, error) {
 	result := make(map[models.JokeID]models.Joke)
 	for i := range c {
 		if _, ok := result[c[i].ID]; ok {
-			return nil, fmt.Errorf("%w, value with joke.JokeID = %d already exists", ErrorDuplicateKey, c[i].ID)
+			return nil, fmt.Errorf("%w, value with joke.ID = %d already exists", ErrorDuplicateKey, c[i].ID)
 		}
 		result[c[i].ID] = c[i]
 	}

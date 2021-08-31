@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/ozonva/ova-joke-api/internal/domain/joke"
+	"github.com/ozonva/ova-joke-api/internal/models"
 	pb "github.com/ozonva/ova-joke-api/pkg/ova-joke-api"
 )
 
@@ -19,13 +19,13 @@ func (j *JokeAPI) RemoveJokeV1(_ context.Context, req *pb.RemoveJokeRequestV1) (
 	stor.mx.Lock()
 	defer stor.mx.Unlock()
 
-	if _, ok := stor.data[joke.ID(req.GetId())]; !ok {
+	if _, ok := stor.data[models.JokeID(req.GetId())]; !ok {
 		msg := fmt.Sprintf("joke with id=%d not found", req.Id)
 		log.Error().Msg(fmt.Sprintf("remove: %s", msg))
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("joke with id=%d not found", req.Id))
 	}
 
-	delete(stor.data, joke.ID(req.GetId()))
+	delete(stor.data, models.JokeID(req.GetId()))
 
 	resp := &pb.RemoveJokeResponseV1{}
 	log.Info().Msg(fmt.Sprintf("joke with id=%d removed", req.GetId()))

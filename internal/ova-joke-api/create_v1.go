@@ -6,19 +6,19 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	"github.com/ozonva/ova-joke-api/internal/domain/joke"
+	"github.com/ozonva/ova-joke-api/internal/models"
 	pb "github.com/ozonva/ova-joke-api/pkg/ova-joke-api"
 )
 
-func createJokeRequestV1ToJoke(r *pb.CreateJokeRequestV1, id joke.ID) *joke.Joke {
-	return joke.New(
+func createJokeRequestV1ToJoke(r *pb.CreateJokeRequestV1, id models.JokeID) *models.Joke {
+	return models.NewJoke(
 		id,
 		r.Text,
 		pbAuthorToAuthor(r.GetAuthor()),
 	)
 }
 
-func jokeToCreateJokeResponseV1(j *joke.Joke) *pb.CreateJokeResponseV1 {
+func jokeToCreateJokeResponseV1(j *models.Joke) *pb.CreateJokeResponseV1 {
 	return &pb.CreateJokeResponseV1{
 		Id: int64(j.ID),
 	}
@@ -32,7 +32,7 @@ func (j *JokeAPI) CreateJokeV1(_ context.Context, req *pb.CreateJokeRequestV1) (
 	defer stor.mx.Unlock()
 
 	stor.seq++
-	newJoke := createJokeRequestV1ToJoke(req, joke.ID(stor.seq))
+	newJoke := createJokeRequestV1ToJoke(req, models.JokeID(stor.seq))
 	stor.data[newJoke.ID] = newJoke
 
 	resp := jokeToCreateJokeResponseV1(newJoke)

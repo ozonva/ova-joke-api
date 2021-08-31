@@ -8,11 +8,11 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/ozonva/ova-joke-api/internal/domain/joke"
+	"github.com/ozonva/ova-joke-api/internal/models"
 	pb "github.com/ozonva/ova-joke-api/pkg/ova-joke-api"
 )
 
-func jokeToDescribeJokeResponseV1(j *joke.Joke) *pb.DescribeJokeResponseV1 {
+func jokeToDescribeJokeResponseV1(j *models.Joke) *pb.DescribeJokeResponseV1 {
 	return &pb.DescribeJokeResponseV1{
 		Id:     int64(j.ID),
 		Text:   j.Text,
@@ -27,7 +27,7 @@ func (j *JokeAPI) DescribeJokeV1(_ context.Context, req *pb.DescribeJokeRequestV
 	stor.mx.RLock()
 	defer stor.mx.RUnlock()
 
-	jk, ok := stor.data[joke.ID(req.GetId())]
+	jk, ok := stor.data[models.JokeID(req.GetId())]
 
 	if !ok {
 		msg := fmt.Sprintf("joke with id=%d not found", req.Id)
