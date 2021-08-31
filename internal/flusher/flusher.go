@@ -1,14 +1,15 @@
 package flusher
 
 import (
-	"github.com/ozonva/ova-joke-api/internal/domain/joke"
+	"github.com/ozonva/ova-joke-api/internal/models"
 	"github.com/ozonva/ova-joke-api/internal/repo"
 	"github.com/ozonva/ova-joke-api/internal/utils"
 )
 
+//go:generate mockgen -source flusher.go -package=mocks -destination ./../mocks/flusher.go Flusher
 // Flusher interface to store jokes into repository.
 type Flusher interface {
-	Flush(entities []joke.Joke) []joke.Joke
+	Flush(entities []models.Joke) []models.Joke
 }
 
 // NewFlusher returns Flusher with bulk persist support.
@@ -24,8 +25,8 @@ type flusher struct {
 	entityRepo repo.Repo
 }
 
-func (f flusher) Flush(entities []joke.Joke) []joke.Joke {
-	var failed []joke.Joke
+func (f flusher) Flush(entities []models.Joke) []models.Joke {
+	var failed []models.Joke
 	for _, chunk := range utils.SplitToBulks(entities, f.chunkSize) {
 		if err := f.entityRepo.AddEntities(chunk); err != nil {
 			failed = append(failed, chunk...)

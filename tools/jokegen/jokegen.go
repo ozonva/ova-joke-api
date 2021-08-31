@@ -10,8 +10,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/ozonva/ova-joke-api/internal/domain/author"
-	"github.com/ozonva/ova-joke-api/internal/domain/joke"
+	"github.com/ozonva/ova-joke-api/internal/models"
 )
 
 var (
@@ -55,11 +54,11 @@ func readFile(path string) (result []string, rerr error) {
 }
 
 // makeUserCollection generates collection of author.Author objects with names from names.
-func makeUserCollection(names []string) []*author.Author {
-	users := make([]*author.Author, 0, len(names))
+func makeUserCollection(names []string) []*models.Author {
+	users := make([]*models.Author, 0, len(names))
 	for i, name := range names {
-		users = append(users, author.New(
-			author.ID(i+1),
+		users = append(users, models.NewAuthor(
+			models.AuthorID(i+1),
 			name,
 		))
 	}
@@ -68,19 +67,19 @@ func makeUserCollection(names []string) []*author.Author {
 }
 
 // makeJokeCollection generates joke.Joke objects with texts from jokes slice and authors from ac.
-func makeJokeCollection(jokes []string, ac []*author.Author) []joke.Joke {
+func makeJokeCollection(jokes []string, ac []*models.Author) []models.Joke {
 	rand.Seed(time.Now().UnixNano())
 
-	jresult := make([]joke.Joke, 0, len(jokes))
+	collection := make([]models.Joke, 0, len(jokes))
 	for i, text := range jokes {
-		jresult = append(jresult, *joke.New(joke.ID(i+1), text, ac[rand.Intn(len(ac))])) // nolint:gosec
+		collection = append(collection, *models.NewJoke(models.JokeID(i+1), text, ac[rand.Intn(len(ac))])) // nolint:gosec
 	}
 
-	return jresult
+	return collection
 }
 
 // writeJokesAsJSON serialize []joke.Joke into JSON and write to file.
-func writeJokesAsJSON(path string, data []joke.Joke) error {
+func writeJokesAsJSON(path string, data []models.Joke) error {
 	content, err := json.MarshalIndent(data, "", "    ")
 	if err != nil {
 		return fmt.Errorf("marshal failed: %w", err)
@@ -93,6 +92,7 @@ func writeJokesAsJSON(path string, data []joke.Joke) error {
 	return nil
 }
 
+//go:generate go run jokegen.go -jokes=jokes.txt -names=names.txt -out=generated/jokes.json
 func main() {
 	flag.Parse()
 

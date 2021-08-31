@@ -1,15 +1,15 @@
-package author
+package models
 
 import "fmt"
 
 // compile time interface check.
 var _ fmt.Stringer = Author{}
 
-type ID = uint64
+type AuthorID = uint64
 
 type Author struct {
-	ID   ID     `json:"id"`
-	Name string `json:"name"`
+	ID   AuthorID `json:"id"`
+	Name string   `json:"name"`
 }
 
 func (a Author) String() string {
@@ -22,10 +22,10 @@ func (a Author) String() string {
 	}
 
 	if a.Name == "" {
-		return fmt.Sprintf("ID: %d", a.ID)
+		return fmt.Sprintf("AuthorID: %d", a.ID)
 	}
 
-	return fmt.Sprintf("ID: %d, Name: %q", a.ID, a.Name)
+	return fmt.Sprintf("AuthorID: %d, Name: %q", a.ID, a.Name)
 }
 
 func (a Author) Copyright() string {
@@ -36,7 +36,7 @@ func (a Author) Copyright() string {
 	return ""
 }
 
-func New(id ID, name string) *Author {
+func NewAuthor(id AuthorID, name string) *Author {
 	return &Author{
 		ID:   id,
 		Name: name,

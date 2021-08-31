@@ -1,17 +1,15 @@
 // +build test_unit
 
-package joke
+package models
 
 import (
 	"encoding/json"
 	"testing"
 
-	"github.com/ozonva/ova-joke-api/internal/domain/author"
-
 	"github.com/stretchr/testify/require"
 )
 
-func TestString(t *testing.T) {
+func TestJokeString(t *testing.T) {
 	type args struct {
 		j Joke
 	}
@@ -32,7 +30,7 @@ func TestString(t *testing.T) {
 			args: args{
 				j: Joke{
 					ID:     12,
-					Author: &author.Author{},
+					Author: &Author{},
 					Text: "Since 1940, the year Chuck Norris was born, roundhouse kick" +
 						" related deaths have increased 13,000 percent.",
 				},
@@ -45,7 +43,7 @@ func TestString(t *testing.T) {
 			args: args{
 				j: Joke{
 					ID: 12,
-					Author: &author.Author{
+					Author: &Author{
 						ID:   34,
 						Name: "Sasha99",
 					},
@@ -62,7 +60,7 @@ func TestString(t *testing.T) {
 	}
 }
 
-func TestMarshal(t *testing.T) {
+func TestJokeMarshal(t *testing.T) {
 	type args struct {
 		j Joke
 	}
@@ -95,7 +93,7 @@ func TestMarshal(t *testing.T) {
 			args: args{
 				j: Joke{
 					ID: 12,
-					Author: &author.Author{
+					Author: &Author{
 						ID:   34,
 						Name: "Sasha99",
 					},
@@ -116,13 +114,13 @@ func TestMarshal(t *testing.T) {
 	}
 }
 
-func TestNew(t *testing.T) {
-	a := author.New(1, "author#1")
+func TestNewJoke(t *testing.T) {
+	a := NewAuthor(1, "author#1")
 
 	type args struct {
-		id   ID
+		id   JokeID
 		text string
-		a    *author.Author
+		a    *Author
 	}
 	tests := []struct {
 		name string
@@ -166,7 +164,7 @@ func TestNew(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			require.Equal(t, tt.want, New(tt.args.id, tt.args.text, tt.args.a))
+			require.Equal(t, tt.want, NewJoke(tt.args.id, tt.args.text, tt.args.a))
 		})
 	}
 }

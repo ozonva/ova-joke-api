@@ -11,25 +11,24 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"github.com/ozonva/ova-joke-api/internal/domain/author"
-	"github.com/ozonva/ova-joke-api/internal/domain/joke"
-	mock_flusher "github.com/ozonva/ova-joke-api/internal/flusher/generated"
+	mock_flusher "github.com/ozonva/ova-joke-api/internal/mocks"
+	"github.com/ozonva/ova-joke-api/internal/models"
 )
 
-func makeJokeCollection(sz int) []joke.Joke {
-	a := &author.Author{
+func makeJokeCollection(sz int) []models.Joke {
+	a := &models.Author{
 		ID:   12,
 		Name: "L.Tolstoy",
 	}
-	jokes := make([]joke.Joke, 0, sz)
-	for i := 0; i < sz; i++ {
-		jokes = append(jokes, *joke.New(joke.ID(i+1), "joke#"+strconv.Itoa(i+1), a))
+	jokes := make([]models.Joke, 0, sz)
+	for i := 1; i < sz+1; i++ {
+		jokes = append(jokes, *models.NewJoke(models.JokeID(i), "joke#"+strconv.Itoa(i), a))
 	}
 
 	return jokes
 }
 
-func callSaveOnJokes(s *JokeSaver, jokes []joke.Joke) {
+func callSaveOnJokes(s *JokeSaver, jokes []models.Joke) {
 	for _, jj := range jokes {
 		s.Save(jj)
 	}
@@ -37,7 +36,7 @@ func callSaveOnJokes(s *JokeSaver, jokes []joke.Joke) {
 
 // Return internal buffer of JokeSaver for assert.
 // Race detector prevent concurrent access and fail tests asserts.
-func getBuffer(s *JokeSaver) []joke.Joke {
+func getBuffer(s *JokeSaver) []models.Joke {
 	s.mx.Lock()
 	defer s.mx.Unlock()
 	return s.buffer
@@ -61,7 +60,7 @@ var _ = Describe("Saver", func() {
 		mockFlusher *mock_flusher.MockFlusher
 
 		jSaver *JokeSaver
-		jokes  []joke.Joke
+		jokes  []models.Joke
 	)
 
 	BeforeEach(func() {
@@ -139,7 +138,7 @@ var _ = Describe("Saver", func() {
 
 				It("expect buffer still empty", func() {
 					// init run, but clear buffer
-					jSaver.Save(joke.Joke{})
+					jSaver.Save(models.Joke{})
 					resetBuffer(jSaver)
 
 					callSaveOnJokes(jSaver, jokes)

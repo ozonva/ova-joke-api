@@ -1,6 +1,6 @@
 // +build test_unit
 
-package author
+package models
 
 import (
 	"testing"
@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestString(t *testing.T) {
+func TestAuthorString(t *testing.T) {
 	type args struct {
 		a Author
 	}
@@ -25,11 +25,11 @@ func TestString(t *testing.T) {
 			want: "",
 		},
 		{
-			name: "only ID",
+			name: "only AuthorID",
 			args: args{
 				a: Author{ID: 42},
 			},
-			want: "ID: 42",
+			want: "AuthorID: 42",
 		},
 		{
 			name: "only Name",
@@ -46,7 +46,7 @@ func TestString(t *testing.T) {
 					Name: "lev1828",
 				},
 			},
-			want: "ID: 42, Name: \"lev1828\"",
+			want: "AuthorID: 42, Name: \"lev1828\"",
 		},
 	}
 	for _, tt := range tests {
@@ -56,7 +56,7 @@ func TestString(t *testing.T) {
 	}
 }
 
-func TestCopyright(t *testing.T) {
+func TestAuthorCopyright(t *testing.T) {
 	type args struct {
 		a Author
 	}
@@ -90,9 +90,9 @@ func TestCopyright(t *testing.T) {
 	}
 }
 
-func TestNew(t *testing.T) {
+func TestNewAuthor(t *testing.T) {
 	type args struct {
-		id   ID
+		id   AuthorID
 		name string
 	}
 	tests := []struct {
@@ -122,7 +122,7 @@ func TestNew(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			require.Equal(t, tt.want, New(tt.args.id, tt.args.name))
+			require.Equal(t, tt.want, NewAuthor(tt.args.id, tt.args.name))
 		})
 	}
 }

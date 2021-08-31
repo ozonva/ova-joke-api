@@ -6,15 +6,15 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/ozonva/ova-joke-api/internal/domain/joke"
-
 	"github.com/stretchr/testify/require"
+
+	"github.com/ozonva/ova-joke-api/internal/models"
 )
 
-func makeJokeCollection(sz int) []joke.Joke {
-	jokes := make([]joke.Joke, 0, sz)
-	for i := 0; i < sz; i++ {
-		jokes = append(jokes, *joke.New(joke.ID(i+1), "joke#"+strconv.Itoa(i+1), nil))
+func makeJokeCollection(sz int) []models.Joke {
+	jokes := make([]models.Joke, 0, sz)
+	for i := 1; i < sz+1; i++ {
+		jokes = append(jokes, *models.NewJoke(models.JokeID(i), "joke#"+strconv.Itoa(i), nil))
 	}
 
 	return jokes
@@ -24,13 +24,13 @@ func TestSplitToBulks(t *testing.T) {
 	jokes := makeJokeCollection(10)
 
 	type args struct {
-		c  []joke.Joke
+		c  []models.Joke
 		sz int
 	}
 	tests := []struct {
 		name string
 		args args
-		want [][]joke.Joke
+		want [][]models.Joke
 	}{
 		{
 			name: "simple case",
@@ -38,7 +38,7 @@ func TestSplitToBulks(t *testing.T) {
 				c:  jokes[:4], // 0, 1, 2, 3
 				sz: 3,
 			},
-			want: [][]joke.Joke{
+			want: [][]models.Joke{
 				jokes[0:3], // 0, 1, 2
 				jokes[3:4], // 3
 			},
@@ -49,7 +49,7 @@ func TestSplitToBulks(t *testing.T) {
 				c:  jokes[:4], // 0, 1, 2, 3
 				sz: 2,
 			},
-			want: [][]joke.Joke{
+			want: [][]models.Joke{
 				jokes[:2],  // 0, 1
 				jokes[2:4], // 2, 3
 			},
@@ -60,25 +60,25 @@ func TestSplitToBulks(t *testing.T) {
 				c:  jokes[:4], // 0, 1, 2, 3
 				sz: 10,
 			},
-			want: [][]joke.Joke{
+			want: [][]models.Joke{
 				jokes[:4], // 0, 1, 2, 3
 			},
 		},
 		{
 			name: "empty",
 			args: args{
-				c:  []joke.Joke{},
+				c:  []models.Joke{},
 				sz: 10,
 			},
-			want: [][]joke.Joke{},
+			want: [][]models.Joke{},
 		},
 		{
 			name: "empty and zero sz",
 			args: args{
-				c:  []joke.Joke{},
+				c:  []models.Joke{},
 				sz: 0,
 			},
-			want: [][]joke.Joke{},
+			want: [][]models.Joke{},
 		},
 		{
 			name: "nil slice",
@@ -86,7 +86,7 @@ func TestSplitToBulks(t *testing.T) {
 				c:  nil,
 				sz: 10,
 			},
-			want: [][]joke.Joke{},
+			want: [][]models.Joke{},
 		},
 		{
 			name: "negative sz",
@@ -94,7 +94,7 @@ func TestSplitToBulks(t *testing.T) {
 				c:  jokes[:4],
 				sz: -2,
 			},
-			want: [][]joke.Joke{
+			want: [][]models.Joke{
 				jokes[:4],
 			},
 		},
@@ -104,7 +104,7 @@ func TestSplitToBulks(t *testing.T) {
 				c:  jokes[:4],
 				sz: 0,
 			},
-			want: [][]joke.Joke{
+			want: [][]models.Joke{
 				jokes[:4],
 			},
 		},
@@ -120,12 +120,12 @@ func TestBuildIndex(t *testing.T) {
 	jokes := makeJokeCollection(10)
 
 	type args struct {
-		c []joke.Joke
+		c []models.Joke
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    map[joke.ID]joke.Joke
+		want    map[models.JokeID]models.Joke
 		wantErr bool
 	}{
 		{
@@ -133,7 +133,7 @@ func TestBuildIndex(t *testing.T) {
 			args: args{
 				c: jokes[0:3],
 			},
-			want: map[joke.ID]joke.Joke{
+			want: map[models.JokeID]models.Joke{
 				1: jokes[0],
 				2: jokes[1],
 				3: jokes[2],
@@ -142,9 +142,9 @@ func TestBuildIndex(t *testing.T) {
 		{
 			name: "empty map",
 			args: args{
-				c: []joke.Joke{},
+				c: []models.Joke{},
 			},
-			want: map[joke.ID]joke.Joke{},
+			want: map[models.JokeID]models.Joke{},
 		},
 		{
 			name: "with duplicate key in collection",

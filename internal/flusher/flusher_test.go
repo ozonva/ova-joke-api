@@ -8,20 +8,19 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"github.com/ozonva/ova-joke-api/internal/domain/author"
-	"github.com/ozonva/ova-joke-api/internal/domain/joke"
 	"github.com/ozonva/ova-joke-api/internal/flusher"
-	mock_repo "github.com/ozonva/ova-joke-api/internal/repo/generated"
+	mock_repo "github.com/ozonva/ova-joke-api/internal/mocks"
+	"github.com/ozonva/ova-joke-api/internal/models"
 )
 
-func makeJokeCollection(sz int) []joke.Joke {
-	a := &author.Author{
+func makeJokeCollection(sz int) []models.Joke {
+	a := &models.Author{
 		ID:   12,
 		Name: "L.Tolstoy",
 	}
-	jokes := make([]joke.Joke, 0, sz)
-	for i := 0; i < sz; i++ {
-		jokes = append(jokes, *joke.New(joke.ID(i+1), "joke#"+strconv.Itoa(i+1), a))
+	jokes := make([]models.Joke, 0, sz)
+	for i := 1; i < sz+1; i++ {
+		jokes = append(jokes, *models.NewJoke(models.JokeID(i), "joke#"+strconv.Itoa(i), a))
 	}
 
 	return jokes
@@ -30,7 +29,7 @@ func makeJokeCollection(sz int) []joke.Joke {
 var _ = Describe("When Flusher", func() {
 	var (
 		ctrl                    *gomock.Controller
-		jokes                   []joke.Joke
+		jokes                   []models.Joke
 		repo                    *mock_repo.MockRepo
 		fl                      flusher.Flusher
 		errTestingRepoAddFailed = fmt.Errorf("failed Repo.AddEntities()")
@@ -53,7 +52,7 @@ var _ = Describe("When Flusher", func() {
 
 			When("passed collection is empty", func() {
 				BeforeEach(func() {
-					jokes = []joke.Joke{}
+					jokes = []models.Joke{}
 				})
 
 				It("not call Repo.AddEntities() at all", func() {
@@ -121,7 +120,7 @@ var _ = Describe("When Flusher", func() {
 
 			When("passed collection is empty", func() {
 				BeforeEach(func() {
-					jokes = []joke.Joke{}
+					jokes = []models.Joke{}
 				})
 
 				It("not call Repo.AddEntities() at all", func() {
@@ -157,7 +156,7 @@ var _ = Describe("When Flusher", func() {
 
 			When("passed collection is empty", func() {
 				BeforeEach(func() {
-					jokes = []joke.Joke{}
+					jokes = []models.Joke{}
 				})
 
 				It("not call Repo.AddEntities() at all", func() {

@@ -9,8 +9,8 @@ import (
 
 	"github.com/benbjohnson/clock"
 
-	"github.com/ozonva/ova-joke-api/internal/domain/joke"
 	"github.com/ozonva/ova-joke-api/internal/flusher"
+	"github.com/ozonva/ova-joke-api/internal/models"
 )
 
 var ErrInvalidArgument = errors.New("invalid argument")
@@ -18,13 +18,13 @@ var ErrInvalidArgument = errors.New("invalid argument")
 type JokeSaver struct {
 	mx     sync.Mutex
 	fl     flusher.Flusher
-	buffer []joke.Joke
+	buffer []models.Joke
 
 	tickerCtxCancel context.CancelFunc
 	tickerWg        sync.WaitGroup
 }
 
-func (s *JokeSaver) Save(entity joke.Joke) {
+func (s *JokeSaver) Save(entity models.Joke) {
 	s.mx.Lock()
 	defer s.mx.Unlock()
 
@@ -90,7 +90,7 @@ func NewSaver(ctx context.Context, capacity uint, flusher flusher.Flusher, dur t
 
 	s := &JokeSaver{
 		fl:     flusher,
-		buffer: make([]joke.Joke, 0, capacity),
+		buffer: make([]models.Joke, 0, capacity),
 	}
 
 	s.run(ctx, dur)

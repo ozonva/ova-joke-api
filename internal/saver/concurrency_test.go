@@ -10,14 +10,14 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/goleak"
 
-	"github.com/ozonva/ova-joke-api/internal/domain/joke"
+	"github.com/ozonva/ova-joke-api/internal/models"
 )
 
 type MockFlusher struct {
 	FlushCnt int32
 }
 
-func (f *MockFlusher) Flush([]joke.Joke) []joke.Joke {
+func (f *MockFlusher) Flush([]models.Joke) []models.Joke {
 	atomic.AddInt32(&(f.FlushCnt), 1)
 	return nil
 }
@@ -38,7 +38,7 @@ func TestServer(t *testing.T) {
 	t.Run("no goroutine leaks on close", func(t *testing.T) {
 		fl := &MockFlusher{}
 		s := NewSaver(context.TODO(), 42, fl, defaultDuration)
-		s.Save(joke.Joke{})
+		s.Save(models.Joke{})
 		s.Close()
 	})
 
@@ -50,7 +50,7 @@ func TestServer(t *testing.T) {
 		defer s.Close()
 
 		for i := 0; i < 10; i++ {
-			s.Save(joke.Joke{})
+			s.Save(models.Joke{})
 		}
 
 		// flush calls at least once
@@ -70,7 +70,7 @@ func TestServer(t *testing.T) {
 			go func() {
 				defer wg.Done()
 				for i := 0; i < 100; i++ {
-					s.Save(joke.Joke{})
+					s.Save(models.Joke{})
 				}
 			}()
 		}
