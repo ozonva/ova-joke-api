@@ -14,13 +14,9 @@ import (
 )
 
 func makeJokeCollection(sz int) []models.Joke {
-	a := &models.Author{
-		ID:   12,
-		Name: "L.Tolstoy",
-	}
 	jokes := make([]models.Joke, 0, sz)
 	for i := 1; i < sz+1; i++ {
-		jokes = append(jokes, *models.NewJoke(models.JokeID(i), "joke#"+strconv.Itoa(i), a))
+		jokes = append(jokes, *models.NewJoke(models.JokeID(i), "joke#"+strconv.Itoa(i), 1))
 	}
 
 	return jokes
