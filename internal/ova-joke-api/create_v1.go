@@ -14,13 +14,13 @@ func createJokeRequestV1ToJoke(r *pb.CreateJokeRequestV1, id models.JokeID) *mod
 	return models.NewJoke(
 		id,
 		r.Text,
-		pbAuthorToAuthor(r.GetAuthor()),
+		r.GetAuthorId(),
 	)
 }
 
 func jokeToCreateJokeResponseV1(j *models.Joke) *pb.CreateJokeResponseV1 {
 	return &pb.CreateJokeResponseV1{
-		Id: int64(j.ID),
+		Id: j.ID,
 	}
 }
 
@@ -28,12 +28,12 @@ func jokeToCreateJokeResponseV1(j *models.Joke) *pb.CreateJokeResponseV1 {
 func (j *JokeAPI) CreateJokeV1(_ context.Context, req *pb.CreateJokeRequestV1) (*pb.CreateJokeResponseV1, error) {
 	log.Info().Msg(fmt.Sprintf("create: %s", req.String()))
 
-	stor.mx.Lock()
-	defer stor.mx.Unlock()
+	j.jokes.mx.Lock()
+	defer j.jokes.mx.Unlock()
 
-	stor.seq++
-	newJoke := createJokeRequestV1ToJoke(req, models.JokeID(stor.seq))
-	stor.data[newJoke.ID] = newJoke
+	j.jokes.seq++
+	newJoke := createJokeRequestV1ToJoke(req, models.JokeID(j.jokes.seq))
+	j.jokes.data[newJoke.ID] = newJoke
 
 	resp := jokeToCreateJokeResponseV1(newJoke)
 	log.Info().Msg(fmt.Sprintf("created: %s", resp.String()))

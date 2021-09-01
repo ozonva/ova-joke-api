@@ -14,9 +14,9 @@ import (
 
 func jokeToDescribeJokeResponseV1(j *models.Joke) *pb.DescribeJokeResponseV1 {
 	return &pb.DescribeJokeResponseV1{
-		Id:     int64(j.ID),
-		Text:   j.Text,
-		Author: authorToPbAuthor(j.Author),
+		Id:       j.ID,
+		Text:     j.Text,
+		AuthorId: j.AuthorID,
 	}
 }
 
@@ -24,10 +24,10 @@ func jokeToDescribeJokeResponseV1(j *models.Joke) *pb.DescribeJokeResponseV1 {
 func (j *JokeAPI) DescribeJokeV1(_ context.Context, req *pb.DescribeJokeRequestV1) (*pb.DescribeJokeResponseV1, error) {
 	log.Info().Msg(fmt.Sprintf("describe: %s", req.String()))
 
-	stor.mx.RLock()
-	defer stor.mx.RUnlock()
+	j.jokes.mx.RLock()
+	defer j.jokes.mx.RUnlock()
 
-	jk, ok := stor.data[models.JokeID(req.GetId())]
+	jk, ok := j.jokes.data[req.GetId()]
 
 	if !ok {
 		msg := fmt.Sprintf("joke with id=%d not found", req.Id)

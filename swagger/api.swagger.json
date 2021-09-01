@@ -12,24 +12,12 @@
   ],
   "paths": {},
   "definitions": {
-    "ova_joke_apiAuthor": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "int64"
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
     "ova_joke_apiCreateJokeResponseV1": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string",
-          "format": "int64"
+          "format": "uint64"
         }
       }
     },
@@ -38,13 +26,14 @@
       "properties": {
         "id": {
           "type": "string",
-          "format": "int64"
+          "format": "uint64"
         },
         "text": {
           "type": "string"
         },
-        "author": {
-          "$ref": "#/definitions/ova_joke_apiAuthor"
+        "author_id": {
+          "type": "string",
+          "format": "uint64"
         }
       }
     },
@@ -53,13 +42,14 @@
       "properties": {
         "id": {
           "type": "string",
-          "format": "int64"
+          "format": "uint64"
         },
         "text": {
           "type": "string"
         },
-        "author": {
-          "$ref": "#/definitions/ova_joke_apiAuthor"
+        "author_id": {
+          "type": "string",
+          "format": "uint64"
         }
       }
     },

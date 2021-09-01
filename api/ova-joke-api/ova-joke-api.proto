@@ -23,34 +23,29 @@ service JokeService {
   }
 }
 
-message Author {
-  int64 id = 1;
-  string name = 2;
-}
-
 message Joke {
-  int64 id = 1;
+  uint64 id = 1;
   string text = 2;
-  Author author = 3;
+  uint64 author_id = 3;
 }
 
 message CreateJokeRequestV1 {
-  string text = 2;
-  Author author = 3;
+  string text = 1;
+  uint64 author_id = 2;
 }
 
 message CreateJokeResponseV1 {
-  int64 id = 1;
+  uint64 id = 1;
 }
 
 message DescribeJokeRequestV1 {
-  int64 id = 1;
+  uint64 id = 1;
 }
 
 message DescribeJokeResponseV1 {
-  int64 id = 1;
+  uint64 id = 1;
   string text = 2;
-  Author author = 3;
+  uint64 author_id = 3;
 }
 
 message ListJokeRequestV1 {
@@ -61,7 +56,7 @@ message ListJokeResponseV1 {
 }
 
 message RemoveJokeRequestV1 {
-  int64 id = 1;
+  uint64 id = 1;
 }
 
 message RemoveJokeResponseV1 {
