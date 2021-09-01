@@ -6,22 +6,18 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"math/rand"
 	"os"
-	"time"
 
 	"github.com/ozonva/ova-joke-api/internal/models"
 )
 
 var (
 	jokesFile string
-	namesFile string
 	outFile   string
 )
 
 func init() {
 	flag.StringVar(&jokesFile, "jokes", "tools/jokegen/jokes.txt", "file with list of jokes")
-	flag.StringVar(&namesFile, "names", "tools/jokegen/names.txt", "file with list of author's names")
 	flag.StringVar(&outFile, "out", "tools/jokegen/generated/jokes.json", "file with list of jokes objects")
 }
 
@@ -53,32 +49,17 @@ func readFile(path string) (result []string, rerr error) {
 	return result, nil
 }
 
-// makeUserCollection generates collection of author.Author objects with names from names.
-func makeUserCollection(names []string) []*models.Author {
-	users := make([]*models.Author, 0, len(names))
-	for i, name := range names {
-		users = append(users, models.NewAuthor(
-			models.AuthorID(i+1),
-			name,
-		))
-	}
-
-	return users
-}
-
-// makeJokeCollection generates joke.Joke objects with texts from jokes slice and authors from ac.
-func makeJokeCollection(jokes []string, ac []*models.Author) []models.Joke {
-	rand.Seed(time.Now().UnixNano())
-
+// makeJokeCollection generates models.Joke objects with texts from jokes slice and authors from ac.
+func makeJokeCollection(jokes []string, maxAuthorID int) []models.Joke {
 	collection := make([]models.Joke, 0, len(jokes))
 	for i, text := range jokes {
-		collection = append(collection, *models.NewJoke(models.JokeID(i+1), text, ac[rand.Intn(len(ac))])) // nolint:gosec
+		collection = append(collection, *models.NewJoke(models.JokeID(i+1), text, models.AuthorID((i)%maxAuthorID+1)))
 	}
 
 	return collection
 }
 
-// writeJokesAsJSON serialize []joke.Joke into JSON and write to file.
+// writeJokesAsJSON serialize []models.Joke into JSON and write to file.
 func writeJokesAsJSON(path string, data []models.Joke) error {
 	content, err := json.MarshalIndent(data, "", "    ")
 	if err != nil {
@@ -92,13 +73,12 @@ func writeJokesAsJSON(path string, data []models.Joke) error {
 	return nil
 }
 
-//go:generate go run jokegen.go -jokes=jokes.txt -names=names.txt -out=generated/jokes.json
+//go:generate go run jokegen.go -jokes=jokes.txt -out=generated/jokes.json
 func main() {
 	flag.Parse()
 
 	const (
 		JOKES = "jokes"
-		NAMES = "names"
 	)
 
 	type fileData struct {
@@ -108,7 +88,6 @@ func main() {
 
 	files := map[string]*fileData{
 		JOKES: {path: jokesFile},
-		NAMES: {path: namesFile},
 	}
 
 	for t, file := range files {
@@ -120,8 +99,7 @@ func main() {
 		files[t].data = data
 	}
 
-	userCollection := makeUserCollection(files[NAMES].data)
-	jokeCollection := makeJokeCollection(files[JOKES].data, userCollection)
+	jokeCollection := makeJokeCollection(files[JOKES].data, 10)
 
 	err := writeJokesAsJSON(outFile, jokeCollection)
 	if err != nil {
