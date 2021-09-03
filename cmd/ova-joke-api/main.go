@@ -63,7 +63,7 @@ func main() {
 	flag.Parse()
 
 	if dbPort > math.MaxUint16 {
-		log.Fatal().Msg(fmt.Sprintf("invalid dbConn port given %d, must be compatible with uint16", dbPort))
+		log.Fatal().Msgf("invalid dbConn port given %d, must be compatible with uint16", dbPort)
 	}
 
 	dsn := fmt.Sprintf(

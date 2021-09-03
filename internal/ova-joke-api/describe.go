@@ -38,6 +38,12 @@ func (j *JokeAPI) DescribeJoke(_ context.Context, req *pb.DescribeJokeRequest) (
 		return nil, status.Error(codes.Internal, msg)
 	}
 
+	if joke == nil {
+		msg := fmt.Sprintf("joke with id=%d not found", req.GetId())
+		log.Warn().Msg(msg)
+		return nil, status.Error(codes.NotFound, msg)
+	}
+
 	resp := jokeToDescribeJokeResponse(joke)
 	log.Info().Msgf("described: %s", resp.String())
 	return resp, nil
