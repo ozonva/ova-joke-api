@@ -12,7 +12,7 @@
   ],
   "paths": {},
   "definitions": {
-    "ova_joke_apiCreateJokeResponseV1": {
+    "ova_joke_apiCreateJokeResponse": {
       "type": "object",
       "properties": {
         "id": {
@@ -21,7 +21,7 @@
         }
       }
     },
-    "ova_joke_apiDescribeJokeResponseV1": {
+    "ova_joke_apiDescribeJokeResponse": {
       "type": "object",
       "properties": {
         "id": {
@@ -53,7 +53,7 @@
         }
       }
     },
-    "ova_joke_apiListJokeResponseV1": {
+    "ova_joke_apiListJokeResponse": {
       "type": "object",
       "properties": {
         "jokes": {
@@ -64,7 +64,7 @@
         }
       }
     },
-    "ova_joke_apiRemoveJokeResponseV1": {
+    "ova_joke_apiRemoveJokeResponse": {
       "type": "object"
     },
     "protobufAny": {

@@ -9,14 +9,14 @@ import (
 	pb "github.com/ozonva/ova-joke-api/pkg/ova-joke-api"
 )
 
-// ListJokeV1 show list of jokes.
-func (j *JokeAPI) ListJokeV1(_ context.Context, req *pb.ListJokeRequestV1) (*pb.ListJokeResponseV1, error) {
+// ListJoke show list of jokes.
+func (j *JokeAPI) ListJoke(_ context.Context, req *pb.ListJokeRequest) (*pb.ListJokeResponse, error) {
 	log.Info().Msg(fmt.Sprintf("list: %s", req.String()))
 
 	j.jokes.mx.RLock()
 	defer j.jokes.mx.RUnlock()
 
-	resp := &pb.ListJokeResponseV1{}
+	resp := &pb.ListJokeResponse{}
 
 	resp.Jokes = make([]*pb.Joke, 0, len(j.jokes.data))
 	for _, v := range j.jokes.data {

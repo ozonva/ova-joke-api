@@ -12,16 +12,16 @@ import (
 	pb "github.com/ozonva/ova-joke-api/pkg/ova-joke-api"
 )
 
-func jokeToDescribeJokeResponseV1(j *models.Joke) *pb.DescribeJokeResponseV1 {
-	return &pb.DescribeJokeResponseV1{
+func jokeToDescribeJokeResponse(j *models.Joke) *pb.DescribeJokeResponse {
+	return &pb.DescribeJokeResponse{
 		Id:       j.ID,
 		Text:     j.Text,
 		AuthorId: j.AuthorID,
 	}
 }
 
-// DescribeJokeV1 show full information about Joke entity.
-func (j *JokeAPI) DescribeJokeV1(_ context.Context, req *pb.DescribeJokeRequestV1) (*pb.DescribeJokeResponseV1, error) {
+// DescribeJoke show full information about Joke entity.
+func (j *JokeAPI) DescribeJoke(_ context.Context, req *pb.DescribeJokeRequest) (*pb.DescribeJokeResponse, error) {
 	log.Info().Msg(fmt.Sprintf("describe: %s", req.String()))
 
 	j.jokes.mx.RLock()
@@ -31,11 +31,11 @@ func (j *JokeAPI) DescribeJokeV1(_ context.Context, req *pb.DescribeJokeRequestV
 
 	if !ok {
 		msg := fmt.Sprintf("joke with id=%d not found", req.Id)
-		log.Error().Msg(fmt.Sprintf("describe: %s", msg))
+		log.Warn().Msg(fmt.Sprintf("describe: %s", msg))
 		return nil, status.Error(codes.NotFound, msg)
 	}
 
-	resp := jokeToDescribeJokeResponseV1(jk)
+	resp := jokeToDescribeJokeResponse(jk)
 	log.Info().Msg(fmt.Sprintf("described: %s", resp.String()))
 	return resp, nil
 }

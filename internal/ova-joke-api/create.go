@@ -10,7 +10,7 @@ import (
 	pb "github.com/ozonva/ova-joke-api/pkg/ova-joke-api"
 )
 
-func createJokeRequestV1ToJoke(r *pb.CreateJokeRequestV1, id models.JokeID) *models.Joke {
+func createJokeRequestToJoke(r *pb.CreateJokeRequest, id models.JokeID) *models.Joke {
 	return models.NewJoke(
 		id,
 		r.Text,
@@ -18,24 +18,24 @@ func createJokeRequestV1ToJoke(r *pb.CreateJokeRequestV1, id models.JokeID) *mod
 	)
 }
 
-func jokeToCreateJokeResponseV1(j *models.Joke) *pb.CreateJokeResponseV1 {
-	return &pb.CreateJokeResponseV1{
+func jokeToCreateJokeResponse(j *models.Joke) *pb.CreateJokeResponse {
+	return &pb.CreateJokeResponse{
 		Id: j.ID,
 	}
 }
 
-// CreateJokeV1 create new joke entity.
-func (j *JokeAPI) CreateJokeV1(_ context.Context, req *pb.CreateJokeRequestV1) (*pb.CreateJokeResponseV1, error) {
+// CreateJoke create new joke entity.
+func (j *JokeAPI) CreateJoke(_ context.Context, req *pb.CreateJokeRequest) (*pb.CreateJokeResponse, error) {
 	log.Info().Msg(fmt.Sprintf("create: %s", req.String()))
 
 	j.jokes.mx.Lock()
 	defer j.jokes.mx.Unlock()
 
 	j.jokes.seq++
-	newJoke := createJokeRequestV1ToJoke(req, models.JokeID(j.jokes.seq))
+	newJoke := createJokeRequestToJoke(req, models.JokeID(j.jokes.seq))
 	j.jokes.data[newJoke.ID] = newJoke
 
-	resp := jokeToCreateJokeResponseV1(newJoke)
+	resp := jokeToCreateJokeResponse(newJoke)
 	log.Info().Msg(fmt.Sprintf("created: %s", resp.String()))
 	return resp, nil
 }
