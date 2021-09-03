@@ -13,13 +13,7 @@
   "paths": {},
   "definitions": {
     "ova_joke_apiCreateJokeResponse": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "uint64"
-        }
-      }
+      "type": "object"
     },
     "ova_joke_apiDescribeJokeResponse": {
       "type": "object",

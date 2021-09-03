@@ -11,7 +11,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	mock_flusher "github.com/ozonva/ova-joke-api/internal/mocks"
+	mock "github.com/ozonva/ova-joke-api/internal/mocks/flusher"
 	"github.com/ozonva/ova-joke-api/internal/models"
 )
 
@@ -53,7 +53,7 @@ var _ = Describe("Saver", func() {
 		clc *clock.Mock
 
 		ctrl        *gomock.Controller
-		mockFlusher *mock_flusher.MockFlusher
+		mockFlusher *mock.MockFlusher
 
 		jSaver *JokeSaver
 		jokes  []models.Joke
@@ -66,7 +66,7 @@ var _ = Describe("Saver", func() {
 		}
 
 		ctrl = gomock.NewController(GinkgoT())
-		mockFlusher = mock_flusher.NewMockFlusher(ctrl)
+		mockFlusher = mock.NewMockFlusher(ctrl)
 
 		jSaver = NewSaver(context.TODO(), 3, mockFlusher, 200*time.Millisecond)
 		jokes = jokeFixtures[:0]

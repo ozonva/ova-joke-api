@@ -1,7 +1,7 @@
 -- +goose Up
 -- SQL in this section is executed when the migration is applied.
 CREATE TABLE "joke" (
-    id serial primary key,
+    id bigint primary key,
     text varchar,
     author_id bigint
 );

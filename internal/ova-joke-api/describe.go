@@ -24,18 +24,20 @@ func jokeToDescribeJokeResponse(j *models.Joke) *pb.DescribeJokeResponse {
 func (j *JokeAPI) DescribeJoke(_ context.Context, req *pb.DescribeJokeRequest) (*pb.DescribeJokeResponse, error) {
 	log.Info().Msg(fmt.Sprintf("describe: %s", req.String()))
 
-	j.jokes.mx.RLock()
-	defer j.jokes.mx.RUnlock()
+	joke, err := j.repo.DescribeJoke(req.GetId())
+	if err != nil {
+		msg := fmt.Sprintf("described failed: %v", err)
+		log.Error().Msg(msg)
+		return nil, status.Error(codes.Internal, msg)
+	}
 
-	jk, ok := j.jokes.data[req.GetId()]
-
-	if !ok {
-		msg := fmt.Sprintf("joke with id=%d not found", req.Id)
-		log.Warn().Msg(fmt.Sprintf("describe: %s", msg))
+	if joke == nil {
+		msg := fmt.Sprintf("joke with id=%d not found", req.GetId())
+		log.Warn().Msg(msg)
 		return nil, status.Error(codes.NotFound, msg)
 	}
 
-	resp := jokeToDescribeJokeResponse(jk)
+	resp := jokeToDescribeJokeResponse(joke)
 	log.Info().Msg(fmt.Sprintf("described: %s", resp.String()))
 	return resp, nil
 }
