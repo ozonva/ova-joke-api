@@ -1,0 +1,104 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "api/ova-joke-api/ova-joke-api.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "ova_joke_apiCreateJokeResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "ova_joke_apiDescribeJokeResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "text": {
+          "type": "string"
+        },
+        "author_id": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "ova_joke_apiJoke": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "text": {
+          "type": "string"
+        },
+        "author_id": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "ova_joke_apiListJokeResponse": {
+      "type": "object",
+      "properties": {
+        "jokes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ova_joke_apiJoke"
+          }
+        }
+      }
+    },
+    "ova_joke_apiRemoveJokeResponse": {
+      "type": "object"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
