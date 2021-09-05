@@ -8,7 +8,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/onsi/ginkgo v1.16.4
 	github.com/onsi/gomega v1.16.0
-	github.com/ozonva/ova-joke-api/pkg/ova-joke-api v0.0.0-00010101000000-000000000000
+	github.com/ozonva/ova-joke-api/pkg/ova-joke-api v0.0.0-20210904092453-a0d5e5d51b5e
 	github.com/rs/zerolog v1.24.0
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/goleak v1.1.10
