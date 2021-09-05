@@ -12,13 +12,16 @@ jobs:
   go_get:
     runs-on: ubuntu-latest
     steps:
+      - name: Branch name
+        run: echo running on branch ${GITHUB_REF##*/}
+
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
           go-version: ^1.16
 
       - name: go get
-        run: cd /tmp && go get -v "github.com/${GITHUB_REPOSITORY}"
+        run: cd /tmp && go get -v "github.com/${GITHUB_REPOSITORY}@${GITHUB_REF##*/}"
 
   lint:
     runs-on: ubuntu-latest

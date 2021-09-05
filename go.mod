@@ -5,7 +5,7 @@ go 1.16
 require (
 	github.com/HdrHistogram/hdrhistogram-go v1.1.2 // indirect
 	github.com/Masterminds/squirrel v1.5.0
-	github.com/Shopify/sarama v1.29.1 // indirect
+	github.com/Shopify/sarama v1.29.1
 	github.com/benbjohnson/clock v1.1.0
 	github.com/fsnotify/fsnotify v1.5.0 // indirect
 	github.com/golang/mock v1.6.0
@@ -14,7 +14,7 @@ require (
 	github.com/onsi/ginkgo v1.16.4
 	github.com/onsi/gomega v1.16.0
 	github.com/opentracing/opentracing-go v1.2.0
-	github.com/ozonva/ova-joke-api/pkg/ova-joke-api v0.0.0-00010101000000-000000000000
+	github.com/ozonva/ova-joke-api/pkg/ova-joke-api v0.0.0-20210906100121-11e50c7e1e9e
 	github.com/prometheus/client_golang v1.11.0
 	github.com/rs/zerolog v1.24.0
 	github.com/stretchr/testify v1.7.0
