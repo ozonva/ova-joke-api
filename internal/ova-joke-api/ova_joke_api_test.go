@@ -21,18 +21,26 @@ var errTestService = errors.New("some-service-error")
 var _ = Describe("OvaJokeApi", func() {
 	zerolog.SetGlobalLevel(zerolog.Disabled)
 	var (
-		ctrl     *gomock.Controller
-		mockRepo *mocks.MockRepo
-		srv      pb.JokeServiceServer
-		ctx      context.Context
-		jokes    []models.Joke
-		jokeID   uint64
+		ctrl         *gomock.Controller
+		mockRepo     *mocks.MockRepo
+		mockFlusher  *mocks.MockFlusher
+		mockMetrics  *mocks.MockMetrics
+		mockProducer *mocks.MockProducer
+
+		srv    pb.JokeServiceServer
+		ctx    context.Context
+		jokes  []*models.Joke
+		jokeID uint64
 	)
 
 	BeforeEach(func() {
 		ctrl = gomock.NewController(GinkgoT())
 		mockRepo = mocks.NewMockRepo(ctrl)
-		srv = ova_joke_api.NewJokeAPI(mockRepo)
+		mockFlusher = mocks.NewMockFlusher(ctrl)
+		mockMetrics = mocks.NewMockMetrics(ctrl)
+		mockProducer = mocks.NewMockProducer(ctrl)
+
+		srv = ova_joke_api.NewJokeAPI(mockRepo, mockFlusher, mockMetrics, mockProducer)
 		ctx = context.TODO()
 		jokes = []models.Joke{{ID: 3, Text: "joke #3", AuthorID: 33}}
 		jokeID = 3
@@ -45,6 +53,8 @@ var _ = Describe("OvaJokeApi", func() {
 	Context("Create joke", func() {
 		It("successfully done", func() {
 			mockRepo.EXPECT().AddJokes([]models.Joke{jokes[0]}).Times(1)
+			mockProducer.EXPECT().SendJokeCreatedMsg(ctx, jokes[0].ID).Times(1)
+			mockMetrics.EXPECT().CreateJokeCounterInc().Times(1)
 
 			resp, err := srv.CreateJoke(ctx, &pb.CreateJokeRequest{
 				Id:       jokes[0].ID,
@@ -73,6 +83,7 @@ var _ = Describe("OvaJokeApi", func() {
 	Context("Describe joke", func() {
 		It("successfully done", func() {
 			mockRepo.EXPECT().DescribeJoke(jokeID).Return(&jokes[0], nil).Times(1)
+			mockMetrics.EXPECT().DescribeJokeCounterInc().Times(1)
 
 			resp, err := srv.DescribeJoke(ctx, &pb.DescribeJokeRequest{
 				Id: jokeID,
@@ -117,6 +128,7 @@ var _ = Describe("OvaJokeApi", func() {
 		})
 		It("successfully done", func() {
 			mockRepo.EXPECT().ListJokes(uint64(3), uint64(5)).Return(jokes, nil).Times(1)
+			mockMetrics.EXPECT().ListJokeCounterInc().Times(1)
 
 			resp, err := srv.ListJoke(ctx, &pb.ListJokeRequest{
 				Limit:  uint64(3),
@@ -148,6 +160,8 @@ var _ = Describe("OvaJokeApi", func() {
 	Context("Remove jokes", func() {
 		It("successfully done", func() {
 			mockRepo.EXPECT().RemoveJoke(models.JokeID(3)).Return(nil).Times(1)
+			mockProducer.EXPECT().SendJokeDeletedMsg(ctx, jokes[0].ID).Times(1)
+			mockMetrics.EXPECT().RemoveJokeCounterInc().Times(1)
 
 			resp, err := srv.RemoveJoke(ctx, &pb.RemoveJokeRequest{
 				Id: jokeID,
@@ -166,6 +180,36 @@ var _ = Describe("OvaJokeApi", func() {
 
 			Expect(err).ShouldNot(Succeed())
 			Expect(resp).To(BeEquivalentTo(&pb.RemoveJokeResponse{}))
+		})
+	})
+
+	Context("Update joke", func() {
+		It("successfully done", func() {
+			mockRepo.EXPECT().UpdateJoke(*jokes[0]).Return(nil).Times(1)
+			mockProducer.EXPECT().SendJokeUpdatedMsg(ctx, jokes[0].ID).Times(1)
+			mockMetrics.EXPECT().UpdateJokeCounterInc().Times(1)
+
+			resp, err := srv.UpdateJoke(ctx, &pb.UpdateJokeRequest{
+				Id:       jokes[0].ID,
+				Text:     jokes[0].Text,
+				AuthorId: jokes[0].AuthorID,
+			})
+
+			Expect(err).Should(Succeed())
+			Expect(resp).To(BeEquivalentTo(&pb.UpdateJokeResponse{}))
+		})
+
+		It("failed", func() {
+			mockRepo.EXPECT().UpdateJoke(*jokes[0]).Return(errTestService).Times(1)
+
+			resp, err := srv.UpdateJoke(ctx, &pb.UpdateJokeRequest{
+				Id:       jokes[0].ID,
+				Text:     jokes[0].Text,
+				AuthorId: jokes[0].AuthorID,
+			})
+
+			Expect(err).ShouldNot(Succeed())
+			Expect(resp).To(BeEquivalentTo(&pb.UpdateJokeResponse{}))
 		})
 	})
 })

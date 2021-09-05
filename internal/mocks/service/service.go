@@ -5,6 +5,7 @@
 package mock_ova_joke_api
 
 import (
+	context "context"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -90,4 +91,221 @@ func (m *MockRepo) RemoveJoke(jokeID models.JokeID) error {
 func (mr *MockRepoMockRecorder) RemoveJoke(jokeID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveJoke", reflect.TypeOf((*MockRepo)(nil).RemoveJoke), jokeID)
+}
+
+// UpdateJoke mocks base method.
+func (m *MockRepo) UpdateJoke(joke models.Joke) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateJoke", joke)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateJoke indicates an expected call of UpdateJoke.
+func (mr *MockRepoMockRecorder) UpdateJoke(joke interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateJoke", reflect.TypeOf((*MockRepo)(nil).UpdateJoke), joke)
+}
+
+// MockFlusher is a mock of Flusher interface.
+type MockFlusher struct {
+	ctrl     *gomock.Controller
+	recorder *MockFlusherMockRecorder
+}
+
+// MockFlusherMockRecorder is the mock recorder for MockFlusher.
+type MockFlusherMockRecorder struct {
+	mock *MockFlusher
+}
+
+// NewMockFlusher creates a new mock instance.
+func NewMockFlusher(ctrl *gomock.Controller) *MockFlusher {
+	mock := &MockFlusher{ctrl: ctrl}
+	mock.recorder = &MockFlusherMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockFlusher) EXPECT() *MockFlusherMockRecorder {
+	return m.recorder
+}
+
+// Flush mocks base method.
+func (m *MockFlusher) Flush(ctx context.Context, entities []models.Joke) []models.Joke {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Flush", ctx, entities)
+	ret0, _ := ret[0].([]models.Joke)
+	return ret0
+}
+
+// Flush indicates an expected call of Flush.
+func (mr *MockFlusherMockRecorder) Flush(ctx, entities interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Flush", reflect.TypeOf((*MockFlusher)(nil).Flush), ctx, entities)
+}
+
+// MockMetrics is a mock of Metrics interface.
+type MockMetrics struct {
+	ctrl     *gomock.Controller
+	recorder *MockMetricsMockRecorder
+}
+
+// MockMetricsMockRecorder is the mock recorder for MockMetrics.
+type MockMetricsMockRecorder struct {
+	mock *MockMetrics
+}
+
+// NewMockMetrics creates a new mock instance.
+func NewMockMetrics(ctrl *gomock.Controller) *MockMetrics {
+	mock := &MockMetrics{ctrl: ctrl}
+	mock.recorder = &MockMetricsMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockMetrics) EXPECT() *MockMetricsMockRecorder {
+	return m.recorder
+}
+
+// CreateJokeCounterInc mocks base method.
+func (m *MockMetrics) CreateJokeCounterInc() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "CreateJokeCounterInc")
+}
+
+// CreateJokeCounterInc indicates an expected call of CreateJokeCounterInc.
+func (mr *MockMetricsMockRecorder) CreateJokeCounterInc() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateJokeCounterInc", reflect.TypeOf((*MockMetrics)(nil).CreateJokeCounterInc))
+}
+
+// DescribeJokeCounterInc mocks base method.
+func (m *MockMetrics) DescribeJokeCounterInc() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "DescribeJokeCounterInc")
+}
+
+// DescribeJokeCounterInc indicates an expected call of DescribeJokeCounterInc.
+func (mr *MockMetricsMockRecorder) DescribeJokeCounterInc() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeJokeCounterInc", reflect.TypeOf((*MockMetrics)(nil).DescribeJokeCounterInc))
+}
+
+// ListJokeCounterInc mocks base method.
+func (m *MockMetrics) ListJokeCounterInc() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "ListJokeCounterInc")
+}
+
+// ListJokeCounterInc indicates an expected call of ListJokeCounterInc.
+func (mr *MockMetricsMockRecorder) ListJokeCounterInc() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListJokeCounterInc", reflect.TypeOf((*MockMetrics)(nil).ListJokeCounterInc))
+}
+
+// MultiCreateJokeCounterInc mocks base method.
+func (m *MockMetrics) MultiCreateJokeCounterInc() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "MultiCreateJokeCounterInc")
+}
+
+// MultiCreateJokeCounterInc indicates an expected call of MultiCreateJokeCounterInc.
+func (mr *MockMetricsMockRecorder) MultiCreateJokeCounterInc() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiCreateJokeCounterInc", reflect.TypeOf((*MockMetrics)(nil).MultiCreateJokeCounterInc))
+}
+
+// RemoveJokeCounterInc mocks base method.
+func (m *MockMetrics) RemoveJokeCounterInc() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RemoveJokeCounterInc")
+}
+
+// RemoveJokeCounterInc indicates an expected call of RemoveJokeCounterInc.
+func (mr *MockMetricsMockRecorder) RemoveJokeCounterInc() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveJokeCounterInc", reflect.TypeOf((*MockMetrics)(nil).RemoveJokeCounterInc))
+}
+
+// UpdateJokeCounterInc mocks base method.
+func (m *MockMetrics) UpdateJokeCounterInc() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "UpdateJokeCounterInc")
+}
+
+// UpdateJokeCounterInc indicates an expected call of UpdateJokeCounterInc.
+func (mr *MockMetricsMockRecorder) UpdateJokeCounterInc() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateJokeCounterInc", reflect.TypeOf((*MockMetrics)(nil).UpdateJokeCounterInc))
+}
+
+// MockProducer is a mock of Producer interface.
+type MockProducer struct {
+	ctrl     *gomock.Controller
+	recorder *MockProducerMockRecorder
+}
+
+// MockProducerMockRecorder is the mock recorder for MockProducer.
+type MockProducerMockRecorder struct {
+	mock *MockProducer
+}
+
+// NewMockProducer creates a new mock instance.
+func NewMockProducer(ctrl *gomock.Controller) *MockProducer {
+	mock := &MockProducer{ctrl: ctrl}
+	mock.recorder = &MockProducerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockProducer) EXPECT() *MockProducerMockRecorder {
+	return m.recorder
+}
+
+// SendJokeCreatedMsg mocks base method.
+func (m *MockProducer) SendJokeCreatedMsg(ctx context.Context, id models.JokeID) (int32, int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendJokeCreatedMsg", ctx, id)
+	ret0, _ := ret[0].(int32)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// SendJokeCreatedMsg indicates an expected call of SendJokeCreatedMsg.
+func (mr *MockProducerMockRecorder) SendJokeCreatedMsg(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendJokeCreatedMsg", reflect.TypeOf((*MockProducer)(nil).SendJokeCreatedMsg), ctx, id)
+}
+
+// SendJokeDeletedMsg mocks base method.
+func (m *MockProducer) SendJokeDeletedMsg(ctx context.Context, id models.JokeID) (int32, int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendJokeDeletedMsg", ctx, id)
+	ret0, _ := ret[0].(int32)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// SendJokeDeletedMsg indicates an expected call of SendJokeDeletedMsg.
+func (mr *MockProducerMockRecorder) SendJokeDeletedMsg(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendJokeDeletedMsg", reflect.TypeOf((*MockProducer)(nil).SendJokeDeletedMsg), ctx, id)
+}
+
+// SendJokeUpdatedMsg mocks base method.
+func (m *MockProducer) SendJokeUpdatedMsg(ctx context.Context, id models.JokeID) (int32, int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendJokeUpdatedMsg", ctx, id)
+	ret0, _ := ret[0].(int32)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// SendJokeUpdatedMsg indicates an expected call of SendJokeUpdatedMsg.
+func (mr *MockProducerMockRecorder) SendJokeUpdatedMsg(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendJokeUpdatedMsg", reflect.TypeOf((*MockProducer)(nil).SendJokeUpdatedMsg), ctx, id)
 }

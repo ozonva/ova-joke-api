@@ -4,6 +4,7 @@ package ova_joke_api
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -20,10 +21,14 @@ const _ = grpc.SupportPackageIsVersion7
 type JokeServiceClient interface {
 	// CreateJoke create new joke entity.
 	CreateJoke(ctx context.Context, in *CreateJokeRequest, opts ...grpc.CallOption) (*CreateJokeResponse, error)
+	// MultiCreateJoke creates multiple jokes.
+	MultiCreateJoke(ctx context.Context, in *MultiCreateJokeRequest, opts ...grpc.CallOption) (*MultiCreateJokeResponse, error)
 	// DescribeJoke show full information about Joke entity.
 	DescribeJoke(ctx context.Context, in *DescribeJokeRequest, opts ...grpc.CallOption) (*DescribeJokeResponse, error)
 	// ListJoke show list of jokes.
 	ListJoke(ctx context.Context, in *ListJokeRequest, opts ...grpc.CallOption) (*ListJokeResponse, error)
+	// UpdateJoke delete joke from storage.
+	UpdateJoke(ctx context.Context, in *UpdateJokeRequest, opts ...grpc.CallOption) (*UpdateJokeResponse, error)
 	// RemoveJoke delete joke from storage.
 	RemoveJoke(ctx context.Context, in *RemoveJokeRequest, opts ...grpc.CallOption) (*RemoveJokeResponse, error)
 }
@@ -39,6 +44,15 @@ func NewJokeServiceClient(cc grpc.ClientConnInterface) JokeServiceClient {
 func (c *jokeServiceClient) CreateJoke(ctx context.Context, in *CreateJokeRequest, opts ...grpc.CallOption) (*CreateJokeResponse, error) {
 	out := new(CreateJokeResponse)
 	err := c.cc.Invoke(ctx, "/ozonva.ova_joke_api.JokeService/CreateJoke", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *jokeServiceClient) MultiCreateJoke(ctx context.Context, in *MultiCreateJokeRequest, opts ...grpc.CallOption) (*MultiCreateJokeResponse, error) {
+	out := new(MultiCreateJokeResponse)
+	err := c.cc.Invoke(ctx, "/ozonva.ova_joke_api.JokeService/MultiCreateJoke", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -63,6 +77,15 @@ func (c *jokeServiceClient) ListJoke(ctx context.Context, in *ListJokeRequest, o
 	return out, nil
 }
 
+func (c *jokeServiceClient) UpdateJoke(ctx context.Context, in *UpdateJokeRequest, opts ...grpc.CallOption) (*UpdateJokeResponse, error) {
+	out := new(UpdateJokeResponse)
+	err := c.cc.Invoke(ctx, "/ozonva.ova_joke_api.JokeService/UpdateJoke", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *jokeServiceClient) RemoveJoke(ctx context.Context, in *RemoveJokeRequest, opts ...grpc.CallOption) (*RemoveJokeResponse, error) {
 	out := new(RemoveJokeResponse)
 	err := c.cc.Invoke(ctx, "/ozonva.ova_joke_api.JokeService/RemoveJoke", in, out, opts...)
@@ -78,28 +101,42 @@ func (c *jokeServiceClient) RemoveJoke(ctx context.Context, in *RemoveJokeReques
 type JokeServiceServer interface {
 	// CreateJoke create new joke entity.
 	CreateJoke(context.Context, *CreateJokeRequest) (*CreateJokeResponse, error)
+	// MultiCreateJoke creates multiple jokes.
+	MultiCreateJoke(context.Context, *MultiCreateJokeRequest) (*MultiCreateJokeResponse, error)
 	// DescribeJoke show full information about Joke entity.
 	DescribeJoke(context.Context, *DescribeJokeRequest) (*DescribeJokeResponse, error)
 	// ListJoke show list of jokes.
 	ListJoke(context.Context, *ListJokeRequest) (*ListJokeResponse, error)
+	// UpdateJoke delete joke from storage.
+	UpdateJoke(context.Context, *UpdateJokeRequest) (*UpdateJokeResponse, error)
 	// RemoveJoke delete joke from storage.
 	RemoveJoke(context.Context, *RemoveJokeRequest) (*RemoveJokeResponse, error)
 	mustEmbedUnimplementedJokeServiceServer()
 }
 
 // UnimplementedJokeServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedJokeServiceServer struct {
-}
+type UnimplementedJokeServiceServer struct{}
 
 func (UnimplementedJokeServiceServer) CreateJoke(context.Context, *CreateJokeRequest) (*CreateJokeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateJoke not implemented")
 }
+
+func (UnimplementedJokeServiceServer) MultiCreateJoke(context.Context, *MultiCreateJokeRequest) (*MultiCreateJokeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MultiCreateJoke not implemented")
+}
+
 func (UnimplementedJokeServiceServer) DescribeJoke(context.Context, *DescribeJokeRequest) (*DescribeJokeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DescribeJoke not implemented")
 }
+
 func (UnimplementedJokeServiceServer) ListJoke(context.Context, *ListJokeRequest) (*ListJokeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListJoke not implemented")
 }
+
+func (UnimplementedJokeServiceServer) UpdateJoke(context.Context, *UpdateJokeRequest) (*UpdateJokeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateJoke not implemented")
+}
+
 func (UnimplementedJokeServiceServer) RemoveJoke(context.Context, *RemoveJokeRequest) (*RemoveJokeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveJoke not implemented")
 }
@@ -130,6 +167,24 @@ func _JokeService_CreateJoke_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(JokeServiceServer).CreateJoke(ctx, req.(*CreateJokeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _JokeService_MultiCreateJoke_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MultiCreateJokeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JokeServiceServer).MultiCreateJoke(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ozonva.ova_joke_api.JokeService/MultiCreateJoke",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JokeServiceServer).MultiCreateJoke(ctx, req.(*MultiCreateJokeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -170,6 +225,24 @@ func _JokeService_ListJoke_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _JokeService_UpdateJoke_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateJokeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JokeServiceServer).UpdateJoke(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ozonva.ova_joke_api.JokeService/UpdateJoke",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JokeServiceServer).UpdateJoke(ctx, req.(*UpdateJokeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _JokeService_RemoveJoke_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RemoveJokeRequest)
 	if err := dec(in); err != nil {
@@ -200,12 +273,20 @@ var JokeService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _JokeService_CreateJoke_Handler,
 		},
 		{
+			MethodName: "MultiCreateJoke",
+			Handler:    _JokeService_MultiCreateJoke_Handler,
+		},
+		{
 			MethodName: "DescribeJoke",
 			Handler:    _JokeService_DescribeJoke_Handler,
 		},
 		{
 			MethodName: "ListJoke",
 			Handler:    _JokeService_ListJoke_Handler,
+		},
+		{
+			MethodName: "UpdateJoke",
+			Handler:    _JokeService_UpdateJoke_Handler,
 		},
 		{
 			MethodName: "RemoveJoke",

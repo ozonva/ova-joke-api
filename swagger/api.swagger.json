@@ -58,7 +58,13 @@
         }
       }
     },
+    "ova_joke_apiMultiCreateJokeResponse": {
+      "type": "object"
+    },
     "ova_joke_apiRemoveJokeResponse": {
+      "type": "object"
+    },
+    "ova_joke_apiUpdateJokeResponse": {
       "type": "object"
     },
     "protobufAny": {

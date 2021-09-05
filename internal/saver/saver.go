@@ -9,15 +9,20 @@ import (
 
 	"github.com/benbjohnson/clock"
 
-	"github.com/ozonva/ova-joke-api/internal/flusher"
 	"github.com/ozonva/ova-joke-api/internal/models"
 )
 
 var ErrInvalidArgument = errors.New("invalid argument")
 
+//go:generate mockgen -source saver.go -destination ./../mocks/saver/saver.go internal/mocks/saver
+// Flusher interface to store jokes into repository.
+type Flusher interface {
+	Flush(ctx context.Context, entities []models.Joke) []models.Joke
+}
+
 type JokeSaver struct {
 	mx     sync.Mutex
-	fl     flusher.Flusher
+	fl     Flusher
 	buffer []models.Joke
 
 	tickerCtxCancel context.CancelFunc
@@ -72,7 +77,7 @@ func (s *JokeSaver) flush() {
 }
 
 func (s *JokeSaver) flushNoLock() {
-	failed := s.fl.Flush(s.buffer)
+	failed := s.fl.Flush(context.TODO(), s.buffer)
 	s.buffer = s.buffer[:0]
 	s.buffer = append(s.buffer, failed...)
 }
@@ -83,7 +88,7 @@ var getClock = func() clock.Clock {
 }
 
 // NewSaver returns saver with periodic data persist.
-func NewSaver(ctx context.Context, capacity uint, flusher flusher.Flusher, dur time.Duration) *JokeSaver {
+func NewSaver(ctx context.Context, capacity uint, flusher Flusher, dur time.Duration) *JokeSaver {
 	if capacity < 1 {
 		panic(fmt.Errorf("invalid buffer capacity: %d, %w", capacity, ErrInvalidArgument))
 	}

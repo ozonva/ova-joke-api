@@ -86,6 +86,18 @@ func (j JokePgRepo) RemoveJoke(jokeID models.JokeID) error {
 	return err
 }
 
+// UpdateJoke with from database where id=jokeID.
+func (j JokePgRepo) UpdateJoke(joke models.Joke) error {
+	_, err := j.db.NamedExec(
+		fmt.Sprintf("UPDATE %s SET text=:text, author_id=:author_id WHERE id=:id", jokeTblName),
+		map[string]interface{}{
+			"id":        joke.ID,
+			"text":      joke.Text,
+			"author_id": joke.AuthorID,
+		})
+	return err
+}
+
 func NewJokePgRepo(db *sqlx.DB) *JokePgRepo {
 	return &JokePgRepo{
 		db: db,

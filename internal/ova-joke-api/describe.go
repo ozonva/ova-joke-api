@@ -46,5 +46,6 @@ func (j *JokeAPI) DescribeJoke(_ context.Context, req *pb.DescribeJokeRequest) (
 
 	resp := jokeToDescribeJokeResponse(joke)
 	log.Info().Msgf("described: %s", resp.String())
+	j.metrics.DescribeJokeCounterInc()
 	return resp, nil
 }

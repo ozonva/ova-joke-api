@@ -219,6 +219,70 @@ func TestJokePgRepo_DescribeJoke(t *testing.T) {
 	}
 }
 
+func TestJokePgRepo_UpdateJoke(t *testing.T) {
+	db, mock, err := sqlxmock.Newx()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	s := NewJokePgRepo(db)
+
+	tests := []struct {
+		name    string
+		s       *JokePgRepo
+		joke    models.Joke
+		mock    func()
+		wantErr bool
+		err     error
+	}{
+		{
+			name: "OK",
+			s:    s,
+			joke: models.Joke{
+				ID:       3,
+				Text:     "joke#3",
+				AuthorID: 33,
+			},
+			mock: func() {
+				mock.ExpectExec("^UPDATE joke SET text=\\?, author_id=\\? WHERE id=\\?$").
+					WithArgs("joke#3", 33, 3).
+					WillReturnResult(sqlxmock.NewResult(0, 1))
+			},
+		},
+		{
+			name: "returns error",
+			s:    s,
+			joke: models.Joke{
+				ID:       42,
+				Text:     "joke#42",
+				AuthorID: 4242,
+			},
+			mock: func() {
+				mock.ExpectExec("^UPDATE joke SET text=\\?, author_id=\\? WHERE id=\\?$").
+					WithArgs("joke#42", 4242, 42).
+					WillReturnError(testSomeDbError)
+			},
+			wantErr: true,
+			err:     testSomeDbError,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			err := tt.s.UpdateJoke(tt.joke)
+
+			if tt.wantErr {
+				require.Error(t, err)
+				require.ErrorIs(t, err, tt.err)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
 func TestJokePgRepo_RemoveJoke(t *testing.T) {
 	db, mock, err := sqlxmock.Newx()
 	if err != nil {

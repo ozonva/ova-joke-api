@@ -12,7 +12,7 @@ import (
 )
 
 // RemoveJoke delete joke from storage.
-func (j *JokeAPI) RemoveJoke(_ context.Context, req *pb.RemoveJokeRequest) (*pb.RemoveJokeResponse, error) {
+func (j *JokeAPI) RemoveJoke(ctx context.Context, req *pb.RemoveJokeRequest) (*pb.RemoveJokeResponse, error) {
 	log.Info().Msgf("remove: %s", req.String())
 
 	resp := &pb.RemoveJokeResponse{}
@@ -24,6 +24,13 @@ func (j *JokeAPI) RemoveJoke(_ context.Context, req *pb.RemoveJokeRequest) (*pb.
 		return resp, status.Error(codes.Internal, msg)
 	}
 
+	// send message to kafka
+	_, _, err = j.producer.SendJokeDeletedMsg(ctx, req.GetId())
+	if err != nil {
+		log.Warn().Msgf("send remove joke event failed, reason: %v", err)
+	}
+
 	log.Info().Msgf("joke with id=%d removed", req.GetId())
+	j.metrics.RemoveJokeCounterInc()
 	return resp, nil
 }

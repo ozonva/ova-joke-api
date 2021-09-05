@@ -1,6 +1,7 @@
 package flusher_test
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
@@ -27,7 +28,7 @@ var _ = Describe("When Flusher", func() {
 		ctrl                    *gomock.Controller
 		jokes                   []models.Joke
 		repo                    *mock.MockRepo
-		fl                      flusher.Flusher
+		fl                      *flusher.JokeFlusher
 		errTestingRepoAddFailed = fmt.Errorf("failed Repo.AddJokes()")
 	)
 
@@ -41,9 +42,9 @@ var _ = Describe("When Flusher", func() {
 	})
 
 	Context("calls Flush()", func() {
-		When("flusher sz is > 0", func() {
+		When("JokeFlusher sz is > 0", func() {
 			BeforeEach(func() {
-				fl = flusher.NewFlusher(5, repo)
+				fl = flusher.NewJokeFlusher(5, repo)
 			})
 
 			When("passed collection is empty", func() {
@@ -54,27 +55,27 @@ var _ = Describe("When Flusher", func() {
 				It("not call Repo.AddJokes() at all", func() {
 					repo.EXPECT().AddJokes(jokes).Times(0)
 
-					Expect(fl.Flush(jokes)).To(BeNil())
+					Expect(fl.Flush(context.TODO(), jokes)).To(BeNil())
 				})
 			})
 
-			When("passed collection is smaller then flusher sz", func() {
+			When("passed collection is smaller then JokeFlusher sz", func() {
 				BeforeEach(func() {
 					jokes = makeJokeCollection(3)
 				})
 
 				It("call Repo.AddJokes() once and return nil", func() {
 					repo.EXPECT().AddJokes(jokes).Return(nil)
-					Expect(fl.Flush(jokes)).To(BeNil())
+					Expect(fl.Flush(context.TODO(), jokes)).To(BeNil())
 				})
 
 				It("call Repo.AddJokes() once and fail", func() {
 					repo.EXPECT().AddJokes(jokes).Return(errTestingRepoAddFailed)
-					Expect(fl.Flush(jokes)).To(Equal(jokes))
+					Expect(fl.Flush(context.TODO(), jokes)).To(Equal(jokes))
 				})
 			})
 
-			When("passed collection is larger then flusher sz", func() {
+			When("passed collection is larger then JokeFlusher sz", func() {
 				BeforeEach(func() {
 					jokes = makeJokeCollection(7)
 				})
@@ -83,35 +84,35 @@ var _ = Describe("When Flusher", func() {
 					repo.EXPECT().AddJokes(jokes[:5]).Return(nil)
 					repo.EXPECT().AddJokes(jokes[5:]).Return(nil)
 
-					Expect(fl.Flush(jokes)).To(BeNil())
+					Expect(fl.Flush(context.TODO(), jokes)).To(BeNil())
 				})
 
 				It("call Repo.AddJokes() twice and fail first", func() {
 					repo.EXPECT().AddJokes(jokes[:5]).Return(errTestingRepoAddFailed)
 					repo.EXPECT().AddJokes(jokes[5:]).Return(nil)
 
-					Expect(fl.Flush(jokes)).To(Equal(jokes[:5]))
+					Expect(fl.Flush(context.TODO(), jokes)).To(Equal(jokes[:5]))
 				})
 
 				It("call Repo.AddJokes() twice and fail second", func() {
 					repo.EXPECT().AddJokes(jokes[:5]).Return(nil)
 					repo.EXPECT().AddJokes(jokes[5:]).Return(errTestingRepoAddFailed)
 
-					Expect(fl.Flush(jokes)).To(Equal(jokes[5:]))
+					Expect(fl.Flush(context.TODO(), jokes)).To(Equal(jokes[5:]))
 				})
 
 				It("call Repo.AddJokes() twice and fail both", func() {
 					repo.EXPECT().AddJokes(jokes[:5]).Return(errTestingRepoAddFailed)
 					repo.EXPECT().AddJokes(jokes[5:]).Return(errTestingRepoAddFailed)
 
-					Expect(fl.Flush(jokes)).To(Equal(jokes))
+					Expect(fl.Flush(context.TODO(), jokes)).To(Equal(jokes))
 				})
 			})
 		})
 
-		When("flusher sz is zero", func() {
+		When("JokeFlusher sz is zero", func() {
 			BeforeEach(func() {
-				fl = flusher.NewFlusher(0, repo)
+				fl = flusher.NewJokeFlusher(0, repo)
 			})
 
 			When("passed collection is empty", func() {
@@ -122,11 +123,11 @@ var _ = Describe("When Flusher", func() {
 				It("not call Repo.AddJokes() at all", func() {
 					repo.EXPECT().AddJokes(jokes).Times(0)
 
-					Expect(fl.Flush(jokes)).To(BeNil())
+					Expect(fl.Flush(context.TODO(), jokes)).To(BeNil())
 				})
 			})
 
-			When("passed collection is larger then flusher sz", func() {
+			When("passed collection is larger then JokeFlusher sz", func() {
 				BeforeEach(func() {
 					jokes = makeJokeCollection(3)
 				})
@@ -134,20 +135,20 @@ var _ = Describe("When Flusher", func() {
 				It("call Repo.AddJokes() once and return nil", func() {
 					repo.EXPECT().AddJokes(jokes).Return(nil)
 
-					Expect(fl.Flush(jokes)).To(BeNil())
+					Expect(fl.Flush(context.TODO(), jokes)).To(BeNil())
 				})
 
 				It("call Repo.AddJokes() once and fail first", func() {
 					repo.EXPECT().AddJokes(jokes).Return(errTestingRepoAddFailed)
 
-					Expect(fl.Flush(jokes)).To(Equal(jokes))
+					Expect(fl.Flush(context.TODO(), jokes)).To(Equal(jokes))
 				})
 			})
 		})
 
-		When("flusher sz is negative", func() {
+		When("JokeFlusher sz is negative", func() {
 			BeforeEach(func() {
-				fl = flusher.NewFlusher(-2, repo)
+				fl = flusher.NewJokeFlusher(-2, repo)
 			})
 
 			When("passed collection is empty", func() {
@@ -158,11 +159,11 @@ var _ = Describe("When Flusher", func() {
 				It("not call Repo.AddJokes() at all", func() {
 					repo.EXPECT().AddJokes(jokes).Times(0)
 
-					Expect(fl.Flush(jokes)).To(BeNil())
+					Expect(fl.Flush(context.TODO(), jokes)).To(BeNil())
 				})
 			})
 
-			When("passed collection is larger then flusher sz", func() {
+			When("passed collection is larger then JokeFlusher sz", func() {
 				BeforeEach(func() {
 					jokes = makeJokeCollection(3)
 				})
@@ -170,13 +171,13 @@ var _ = Describe("When Flusher", func() {
 				It("call Repo.AddJokes() once and return nil", func() {
 					repo.EXPECT().AddJokes(jokes).Return(nil)
 
-					Expect(fl.Flush(jokes)).To(BeNil())
+					Expect(fl.Flush(context.TODO(), jokes)).To(BeNil())
 				})
 
 				It("call Repo.AddJokes() once and fail first", func() {
 					repo.EXPECT().AddJokes(jokes).Return(errTestingRepoAddFailed)
 
-					Expect(fl.Flush(jokes)).To(Equal(jokes))
+					Expect(fl.Flush(context.TODO(), jokes)).To(Equal(jokes))
 				})
 			})
 		})

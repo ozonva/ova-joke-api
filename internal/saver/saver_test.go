@@ -11,7 +11,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	mock "github.com/ozonva/ova-joke-api/internal/mocks/flusher"
+	mock "github.com/ozonva/ova-joke-api/internal/mocks/saver"
 	"github.com/ozonva/ova-joke-api/internal/models"
 )
 
@@ -85,7 +85,7 @@ var _ = Describe("Saver", func() {
 			When("shouldn't call flusher at all", func() {
 				BeforeEach(func() {
 					jokes = jokeFixtures[:1]
-					mockFlusher.EXPECT().Flush(jokes).Times(0)
+					mockFlusher.EXPECT().Flush(context.TODO(), jokes).Times(0)
 				})
 
 				It("expect one new element in Saver's buffer", func() {
@@ -100,7 +100,7 @@ var _ = Describe("Saver", func() {
 				When("Flusher success", func() {
 					BeforeEach(func() {
 						jokes = jokeFixtures[:3]
-						mockFlusher.EXPECT().Flush(jokes).Return(nil).Times(1)
+						mockFlusher.EXPECT().Flush(context.TODO(), jokes).Return(nil).Times(1)
 					})
 
 					It("expect no elements in Saver's buffer", func() {
@@ -112,7 +112,7 @@ var _ = Describe("Saver", func() {
 				When("Flusher failed", func() {
 					BeforeEach(func() {
 						jokes = jokeFixtures[:3]
-						mockFlusher.EXPECT().Flush(jokes).Return(jokes[1:2]).Times(1)
+						mockFlusher.EXPECT().Flush(context.TODO(), jokes).Return(jokes[1:2]).Times(1)
 					})
 
 					It("failed elements stay in Saver's buffer", func() {
@@ -129,7 +129,7 @@ var _ = Describe("Saver", func() {
 			When("shouldn't call flusher at all", func() {
 				BeforeEach(func() {
 					jokes = jokeFixtures[:0]
-					mockFlusher.EXPECT().Flush(jokes).Times(0)
+					mockFlusher.EXPECT().Flush(context.TODO(), jokes).Times(0)
 				})
 
 				It("expect buffer still empty", func() {
@@ -151,7 +151,7 @@ var _ = Describe("Saver", func() {
 				When("Flusher success", func() {
 					BeforeEach(func() {
 						jokes = jokeFixtures[:2]
-						mockFlusher.EXPECT().Flush(jokes).Return(nil).Times(1)
+						mockFlusher.EXPECT().Flush(context.TODO(), jokes).Return(nil).Times(1)
 					})
 
 					It("expect no elements in Saver's buffer", func() {
@@ -166,7 +166,7 @@ var _ = Describe("Saver", func() {
 				When("Flusher failed", func() {
 					BeforeEach(func() {
 						jokes = jokeFixtures[:2]
-						mockFlusher.EXPECT().Flush(jokes).Return(jokes[1:2]).Times(1)
+						mockFlusher.EXPECT().Flush(context.TODO(), jokes).Return(jokes[1:2]).Times(1)
 					})
 
 					It("failed elements stay in Saver's buffer", func() {
@@ -186,7 +186,7 @@ var _ = Describe("Saver", func() {
 			When("shouldn't call flusher at all", func() {
 				BeforeEach(func() {
 					jokes = jokeFixtures[:0]
-					mockFlusher.EXPECT().Flush(jokes).Times(0)
+					mockFlusher.EXPECT().Flush(context.TODO(), jokes).Times(0)
 				})
 
 				It("expect buffer still empty", func() {
@@ -202,7 +202,7 @@ var _ = Describe("Saver", func() {
 				When("Flusher success", func() {
 					BeforeEach(func() {
 						jokes = jokeFixtures[:2]
-						mockFlusher.EXPECT().Flush(jokes).Return(nil).Times(1)
+						mockFlusher.EXPECT().Flush(context.TODO(), jokes).Return(nil).Times(1)
 					})
 
 					It("expect no elements in Saver's buffer", func() {
@@ -215,7 +215,7 @@ var _ = Describe("Saver", func() {
 				When("Flusher failed", func() {
 					BeforeEach(func() {
 						jokes = jokeFixtures[:2]
-						mockFlusher.EXPECT().Flush(jokes).Return(jokes[1:2]).Times(1)
+						mockFlusher.EXPECT().Flush(context.TODO(), jokes).Return(jokes[1:2]).Times(1)
 					})
 
 					It("failed elements stay in Saver's buffer", func() {
