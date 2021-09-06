@@ -42,7 +42,7 @@ func (j *JokeAPI) MultiCreateJoke(
 
 	j.flusher.Flush(opentracing.ContextWithSpan(ctx, span), jokes)
 
-	log.Info().Msg(fmt.Sprintf("multiple created %d jokes", len(jokes)))
+	log.Info().Msgf("multiple created %d jokes", len(jokes))
 
 	j.metrics.MultiCreateJokeCounterInc()
 	return &pb.MultiCreateJokeResponse{}, nil

@@ -305,7 +305,7 @@ func TestJokePgRepo_RemoveJoke(t *testing.T) {
 			s:    s,
 			id:   3,
 			mock: func() {
-				mock.ExpectExec("^DELETE FROM joke WHERE id=\\?$").
+				mock.ExpectExec("^DELETE FROM joke WHERE id=\\$1$").
 					WithArgs(3).
 					WillReturnResult(sqlxmock.NewResult(0, 1))
 			},
@@ -315,7 +315,7 @@ func TestJokePgRepo_RemoveJoke(t *testing.T) {
 			s:    s,
 			id:   42,
 			mock: func() {
-				mock.ExpectExec("^DELETE FROM joke WHERE id=\\?$").
+				mock.ExpectExec("^DELETE FROM joke WHERE id=\\$1$").
 					WithArgs(42).
 					WillReturnResult(sqlxmock.NewResult(0, 0))
 			},
@@ -325,7 +325,7 @@ func TestJokePgRepo_RemoveJoke(t *testing.T) {
 			s:    s,
 			id:   42,
 			mock: func() {
-				mock.ExpectExec("^DELETE FROM joke WHERE id=\\?$").
+				mock.ExpectExec("^DELETE FROM joke WHERE id=\\$1$").
 					WithArgs(42).
 					WillReturnError(testSomeDbError)
 			},

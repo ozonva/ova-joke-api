@@ -29,7 +29,7 @@ var _ = Describe("OvaJokeApi", func() {
 
 		srv    pb.JokeServiceServer
 		ctx    context.Context
-		jokes  []*models.Joke
+		jokes  []models.Joke
 		jokeID uint64
 	)
 
@@ -185,7 +185,7 @@ var _ = Describe("OvaJokeApi", func() {
 
 	Context("Update joke", func() {
 		It("successfully done", func() {
-			mockRepo.EXPECT().UpdateJoke(*jokes[0]).Return(nil).Times(1)
+			mockRepo.EXPECT().UpdateJoke(jokes[0]).Return(nil).Times(1)
 			mockProducer.EXPECT().SendJokeUpdatedMsg(ctx, jokes[0].ID).Times(1)
 			mockMetrics.EXPECT().UpdateJokeCounterInc().Times(1)
 
@@ -200,7 +200,7 @@ var _ = Describe("OvaJokeApi", func() {
 		})
 
 		It("failed", func() {
-			mockRepo.EXPECT().UpdateJoke(*jokes[0]).Return(errTestService).Times(1)
+			mockRepo.EXPECT().UpdateJoke(jokes[0]).Return(errTestService).Times(1)
 
 			resp, err := srv.UpdateJoke(ctx, &pb.UpdateJokeRequest{
 				Id:       jokes[0].ID,

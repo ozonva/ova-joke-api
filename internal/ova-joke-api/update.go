@@ -22,7 +22,7 @@ func UpdateJokeRequestToJoke(r *pb.UpdateJokeRequest) *models.Joke {
 
 // UpdateJoke update models.Joke with given id.
 func (j *JokeAPI) UpdateJoke(ctx context.Context, req *pb.UpdateJokeRequest) (*pb.UpdateJokeResponse, error) {
-	log.Info().Msg(fmt.Sprintf("update: %s", req.String()))
+	log.Info().Msgf("update: %s", req.String())
 
 	resp := &pb.UpdateJokeResponse{}
 	joke := UpdateJokeRequestToJoke(req)
@@ -39,7 +39,7 @@ func (j *JokeAPI) UpdateJoke(ctx context.Context, req *pb.UpdateJokeRequest) (*p
 		log.Warn().Msgf("send update joke event failed, reason: %v", err)
 	}
 
-	log.Info().Msg(fmt.Sprintf("joke %s updated", req.String()))
+	log.Info().Msgf("joke %s updated", req.String())
 	j.metrics.UpdateJokeCounterInc()
 	return resp, nil
 }
