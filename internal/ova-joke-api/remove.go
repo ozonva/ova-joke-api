@@ -13,7 +13,7 @@ import (
 
 // RemoveJoke delete joke from storage.
 func (j *JokeAPI) RemoveJoke(_ context.Context, req *pb.RemoveJokeRequest) (*pb.RemoveJokeResponse, error) {
-	log.Info().Msg(fmt.Sprintf("remove: %s", req.String()))
+	log.Info().Msgf("remove: %s", req.String())
 
 	resp := &pb.RemoveJokeResponse{}
 
@@ -24,6 +24,6 @@ func (j *JokeAPI) RemoveJoke(_ context.Context, req *pb.RemoveJokeRequest) (*pb.
 		return resp, status.Error(codes.Internal, msg)
 	}
 
-	log.Info().Msg(fmt.Sprintf("joke with id=%d removed", req.GetId()))
+	log.Info().Msgf("joke with id=%d removed", req.GetId())
 	return resp, nil
 }

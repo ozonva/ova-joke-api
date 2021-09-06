@@ -22,7 +22,7 @@ func createJokeRequestToJoke(r *pb.CreateJokeRequest) *models.Joke {
 
 // CreateJoke create new joke entity.
 func (j *JokeAPI) CreateJoke(_ context.Context, req *pb.CreateJokeRequest) (*pb.CreateJokeResponse, error) {
-	log.Info().Msg(fmt.Sprintf("create: %s", req.String()))
+	log.Info().Msgf("create: %s", req.String())
 
 	newJoke := createJokeRequestToJoke(req)
 	err := j.repo.AddJokes([]models.Joke{*newJoke})
@@ -32,7 +32,7 @@ func (j *JokeAPI) CreateJoke(_ context.Context, req *pb.CreateJokeRequest) (*pb.
 		return nil, status.Error(codes.Internal, msg)
 	}
 
-	log.Info().Msg(fmt.Sprintf("created: %v", newJoke))
+	log.Info().Msgf("created: %v", newJoke)
 
 	return &pb.CreateJokeResponse{}, nil
 }

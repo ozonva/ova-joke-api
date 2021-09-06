@@ -8,7 +8,7 @@ import (
 //go:generate mockgen -source service.go -destination ./../mocks/service/service.go internal/mocks/service Repo
 type Repo interface {
 	AddJokes(entities []models.Joke) error
-	ListJokes(limit, offset uint64) ([]*models.Joke, error)
+	ListJokes(limit, offset uint64) ([]models.Joke, error)
 	DescribeJoke(jokeID models.JokeID) (*models.Joke, error)
 	RemoveJoke(jokeID models.JokeID) error
 }

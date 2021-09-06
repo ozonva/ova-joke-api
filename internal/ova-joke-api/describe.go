@@ -2,6 +2,8 @@ package ova_joke_api //nolint:revive,stylecheck
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/rs/zerolog/log"
@@ -22,22 +24,21 @@ func jokeToDescribeJokeResponse(j *models.Joke) *pb.DescribeJokeResponse {
 
 // DescribeJoke show full information about Joke entity.
 func (j *JokeAPI) DescribeJoke(_ context.Context, req *pb.DescribeJokeRequest) (*pb.DescribeJokeResponse, error) {
-	log.Info().Msg(fmt.Sprintf("describe: %s", req.String()))
+	log.Info().Msgf("describe: %s", req.String())
 
 	joke, err := j.repo.DescribeJoke(req.GetId())
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			msg := fmt.Sprintf("joke with id=%d not found", req.GetId())
+			log.Warn().Msg(msg)
+			return nil, status.Error(codes.NotFound, msg)
+		}
 		msg := fmt.Sprintf("described failed: %v", err)
 		log.Error().Msg(msg)
 		return nil, status.Error(codes.Internal, msg)
 	}
 
-	if joke == nil {
-		msg := fmt.Sprintf("joke with id=%d not found", req.GetId())
-		log.Warn().Msg(msg)
-		return nil, status.Error(codes.NotFound, msg)
-	}
-
 	resp := jokeToDescribeJokeResponse(joke)
-	log.Info().Msg(fmt.Sprintf("described: %s", resp.String()))
+	log.Info().Msgf("described: %s", resp.String())
 	return resp, nil
 }

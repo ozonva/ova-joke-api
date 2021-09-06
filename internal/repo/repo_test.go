@@ -34,7 +34,7 @@ func TestJokePgRepo_AddJokes(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			//When everything works as expected
+			// When everything works as expected
 			name: "OK",
 			s:    s,
 			jokes: []models.Joke{
@@ -81,7 +81,7 @@ func TestJokePgRepo_ListJokes(t *testing.T) {
 		limit   uint64
 		offset  uint64
 		mock    func()
-		want    []*models.Joke
+		want    []models.Joke
 		wantErr bool
 		err     error
 	}{
@@ -90,7 +90,7 @@ func TestJokePgRepo_ListJokes(t *testing.T) {
 			s:      s,
 			limit:  3,
 			offset: 5,
-			want: []*models.Joke{
+			want: []models.Joke{
 				{3, "joke #3", 3},
 				{4, "joke #4", 4},
 				{5, "joke #5", 5},
@@ -172,7 +172,7 @@ func TestJokePgRepo_DescribeJoke(t *testing.T) {
 				rows := sqlxmock.NewRows([]string{"id", "text", "author_id"}).
 					AddRow(3, "joke #3", 3)
 
-				mock.ExpectQuery("^SELECT id, text, author_id FROM joke WHERE id=\\? LIMIT 1$").
+				mock.ExpectQuery("^SELECT id, text, author_id FROM joke WHERE id=\\$1 LIMIT 1$").
 					WithArgs(3).
 					WillReturnRows(rows)
 			},
@@ -182,17 +182,19 @@ func TestJokePgRepo_DescribeJoke(t *testing.T) {
 			s:    s,
 			id:   3,
 			mock: func() {
-				mock.ExpectQuery("^SELECT id, text, author_id FROM joke WHERE id=\\? LIMIT 1$").
+				mock.ExpectQuery("^SELECT id, text, author_id FROM joke WHERE id=\\$1 LIMIT 1$").
 					WithArgs(3).
 					WillReturnError(sql.ErrNoRows)
 			},
+			wantErr: true,
+			err:     sql.ErrNoRows,
 		},
 		{
 			name: "returns error",
 			s:    s,
 			id:   3,
 			mock: func() {
-				mock.ExpectQuery("^SELECT id, text, author_id FROM joke WHERE id=\\? LIMIT 1$").
+				mock.ExpectQuery("^SELECT id, text, author_id FROM joke WHERE id=\\$1 LIMIT 1$").
 					WithArgs(3).
 					WillReturnError(testSomeDbError)
 			},

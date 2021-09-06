@@ -13,7 +13,7 @@ import (
 
 // ListJoke show list of jokes.
 func (j *JokeAPI) ListJoke(_ context.Context, req *pb.ListJokeRequest) (*pb.ListJokeResponse, error) {
-	log.Info().Msg(fmt.Sprintf("list: %s", req.String()))
+	log.Info().Msgf("list: %s", req.String())
 
 	jokes, err := j.repo.ListJokes(req.GetLimit(), req.GetOffset())
 	if err != nil {
@@ -23,14 +23,14 @@ func (j *JokeAPI) ListJoke(_ context.Context, req *pb.ListJokeRequest) (*pb.List
 	}
 
 	respJokes := make([]*pb.Joke, 0, len(jokes))
-	for _, v := range jokes {
-		respJokes = append(respJokes, jokeToPbJoke(v))
+	for i := range jokes {
+		respJokes = append(respJokes, jokeToPbJoke(&jokes[i]))
 	}
 
 	resp := &pb.ListJokeResponse{
 		Jokes: respJokes,
 	}
 
-	log.Info().Msg(fmt.Sprintf("list of %d element showed", len(resp.Jokes)))
+	log.Info().Msgf("list of %d element showed", len(resp.Jokes))
 	return resp, nil
 }

@@ -64,10 +64,10 @@ func (mr *MockRepoMockRecorder) DescribeJoke(jokeID interface{}) *gomock.Call {
 }
 
 // ListJokes mocks base method.
-func (m *MockRepo) ListJokes(limit, offset uint64) ([]*models.Joke, error) {
+func (m *MockRepo) ListJokes(limit, offset uint64) ([]models.Joke, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListJokes", limit, offset)
-	ret0, _ := ret[0].([]*models.Joke)
+	ret0, _ := ret[0].([]models.Joke)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

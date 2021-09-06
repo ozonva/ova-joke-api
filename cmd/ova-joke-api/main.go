@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"math"
 	"net"
 	"os"
 
@@ -61,7 +62,7 @@ func main() {
 
 	flag.Parse()
 
-	if uint(uint16(dbPort)) != dbPort {
+	if dbPort > math.MaxUint16 {
 		log.Fatal().Msg(fmt.Sprintf("invalid dbConn port given %d, must be compatible with uint16", dbPort))
 	}
 
@@ -75,12 +76,12 @@ func main() {
 		panic(fmt.Sprintf("Unable to connect to database: %v\n", err))
 	}
 
-	defer func(dbConn *sqlx.DB) {
+	defer func() {
 		err := dbConn.Close()
 		if err != nil {
 			panic(fmt.Sprintf("unable to close dbConn connection %v", err))
 		}
-	}(dbConn)
+	}()
 
 	if err := hellower.SayHelloFrom(os.Stdout, serviceName); err != nil {
 		panic(err)

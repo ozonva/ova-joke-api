@@ -2,6 +2,7 @@ package ova_joke_api_test
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 
 	"github.com/golang/mock/gomock"
@@ -24,7 +25,7 @@ var _ = Describe("OvaJokeApi", func() {
 		mockRepo *mocks.MockRepo
 		srv      pb.JokeServiceServer
 		ctx      context.Context
-		jokes    []*models.Joke
+		jokes    []models.Joke
 		jokeID   uint64
 	)
 
@@ -33,7 +34,7 @@ var _ = Describe("OvaJokeApi", func() {
 		mockRepo = mocks.NewMockRepo(ctrl)
 		srv = ova_joke_api.NewJokeAPI(mockRepo)
 		ctx = context.TODO()
-		jokes = []*models.Joke{{ID: 3, Text: "joke #3", AuthorID: 33}}
+		jokes = []models.Joke{{ID: 3, Text: "joke #3", AuthorID: 33}}
 		jokeID = 3
 	})
 
@@ -43,7 +44,7 @@ var _ = Describe("OvaJokeApi", func() {
 
 	Context("Create joke", func() {
 		It("successfully done", func() {
-			mockRepo.EXPECT().AddJokes([]models.Joke{*jokes[0]}).Times(1)
+			mockRepo.EXPECT().AddJokes([]models.Joke{jokes[0]}).Times(1)
 
 			resp, err := srv.CreateJoke(ctx, &pb.CreateJokeRequest{
 				Id:       jokes[0].ID,
@@ -56,7 +57,7 @@ var _ = Describe("OvaJokeApi", func() {
 		})
 
 		It("failed", func() {
-			mockRepo.EXPECT().AddJokes([]models.Joke{*jokes[0]}).Return(errTestService).Times(1)
+			mockRepo.EXPECT().AddJokes([]models.Joke{jokes[0]}).Return(errTestService).Times(1)
 
 			resp, err := srv.CreateJoke(ctx, &pb.CreateJokeRequest{
 				Id:       jokes[0].ID,
@@ -71,7 +72,7 @@ var _ = Describe("OvaJokeApi", func() {
 
 	Context("Describe joke", func() {
 		It("successfully done", func() {
-			mockRepo.EXPECT().DescribeJoke(jokeID).Return(jokes[0], nil).Times(1)
+			mockRepo.EXPECT().DescribeJoke(jokeID).Return(&jokes[0], nil).Times(1)
 
 			resp, err := srv.DescribeJoke(ctx, &pb.DescribeJokeRequest{
 				Id: jokeID,
@@ -84,7 +85,7 @@ var _ = Describe("OvaJokeApi", func() {
 		})
 
 		It("joke not exists", func() {
-			mockRepo.EXPECT().DescribeJoke(jokeID).Return(nil, nil).Times(1)
+			mockRepo.EXPECT().DescribeJoke(jokeID).Return(nil, sql.ErrNoRows).Times(1)
 
 			resp, err := srv.DescribeJoke(ctx, &pb.DescribeJokeRequest{
 				Id: jokeID,
@@ -108,7 +109,7 @@ var _ = Describe("OvaJokeApi", func() {
 
 	Context("List jokes", func() {
 		BeforeEach(func() {
-			jokes = []*models.Joke{
+			jokes = []models.Joke{
 				{ID: 3, Text: "joke #3", AuthorID: 33},
 				{ID: 4, Text: "joke #4", AuthorID: 44},
 				{ID: 5, Text: "joke #5", AuthorID: 55},
