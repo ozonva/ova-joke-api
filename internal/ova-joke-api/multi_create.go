@@ -45,13 +45,13 @@ func (j *JokeAPI) MultiCreateJoke(
 
 	jokes := MultiCreateJokeRequestToJokes(req)
 
-	span, _ := opentracing.StartSpanFromContext(ctx, "multiple_create")
+	span, traceCtx := opentracing.StartSpanFromContext(ctx, "multiple_create")
 	span.LogFields(
 		tracelog.String("batch_size", fmt.Sprintf("%d", len(jokes))),
 	)
 	defer span.Finish()
 
-	failedJokes := j.flusher.Flush(opentracing.ContextWithSpan(ctx, span), jokes)
+	failedJokes := j.flusher.Flush(traceCtx, jokes)
 	if len(failedJokes) > 0 {
 		log.Warn().Msgf("multiple created failed for %d/%d jokes", len(failedJokes), len(jokes))
 		j.metrics.MultiCreateJokeFailedCounterInc()
