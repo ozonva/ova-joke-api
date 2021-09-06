@@ -6,13 +6,15 @@ import (
 )
 
 type Metrics struct {
-	createCounter      prometheus.Counter
-	multiCreateCounter prometheus.Counter
-	listCounter        prometheus.Counter
-	describeCounter    prometheus.Counter
-	updateCounter      prometheus.Counter
-	removeCounter      prometheus.Counter
-	totalCounter       prometheus.Counter
+	createCounter            prometheus.Counter
+	multiCreateCounter       prometheus.Counter
+	multiCreateCounterFailed prometheus.Counter
+	listCounter              prometheus.Counter
+	describeCounter          prometheus.Counter
+	describeNotExistsCounter prometheus.Counter
+	updateCounter            prometheus.Counter
+	removeCounter            prometheus.Counter
+	totalCounter             prometheus.Counter
 }
 
 func (m Metrics) CreateJokeCounterInc() {
@@ -25,6 +27,11 @@ func (m Metrics) MultiCreateJokeCounterInc() {
 	m.totalCounter.Inc()
 }
 
+func (m Metrics) MultiCreateJokeFailedCounterInc() {
+	m.multiCreateCounterFailed.Inc()
+	m.totalCounter.Inc()
+}
+
 func (m Metrics) ListJokeCounterInc() {
 	m.listCounter.Inc()
 	m.totalCounter.Inc()
@@ -32,6 +39,11 @@ func (m Metrics) ListJokeCounterInc() {
 
 func (m Metrics) DescribeJokeCounterInc() {
 	m.describeCounter.Inc()
+	m.totalCounter.Inc()
+}
+
+func (m Metrics) DescribeJokeNotExistsCounterInc() {
+	m.describeNotExistsCounter.Inc()
 	m.totalCounter.Inc()
 }
 
@@ -55,12 +67,20 @@ func NewMetrics() *Metrics {
 			Name: "joke_api_multi_create_total",
 			Help: "The total number multi create requests in joke api",
 		}),
+		multiCreateCounterFailed: promauto.NewCounter(prometheus.CounterOpts{
+			Name: "joke_api_multi_create_failed_total",
+			Help: "The total number multi create failed requests (any of requested entities not created) in joke api",
+		}),
 		listCounter: promauto.NewCounter(prometheus.CounterOpts{
 			Name: "joke_api_list_total",
 			Help: "The total number list requests in joke api",
 		}),
 		describeCounter: promauto.NewCounter(prometheus.CounterOpts{
 			Name: "joke_api_describe_total",
+			Help: "The total number describe requests in joke api",
+		}),
+		describeNotExistsCounter: promauto.NewCounter(prometheus.CounterOpts{
+			Name: "joke_api_describe_not_exists_total",
 			Help: "The total number describe requests in joke api",
 		}),
 		updateCounter: promauto.NewCounter(prometheus.CounterOpts{

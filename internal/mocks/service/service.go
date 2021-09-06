@@ -191,6 +191,18 @@ func (mr *MockMetricsMockRecorder) DescribeJokeCounterInc() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeJokeCounterInc", reflect.TypeOf((*MockMetrics)(nil).DescribeJokeCounterInc))
 }
 
+// DescribeJokeNotExistsCounterInc mocks base method.
+func (m *MockMetrics) DescribeJokeNotExistsCounterInc() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "DescribeJokeNotExistsCounterInc")
+}
+
+// DescribeJokeNotExistsCounterInc indicates an expected call of DescribeJokeNotExistsCounterInc.
+func (mr *MockMetricsMockRecorder) DescribeJokeNotExistsCounterInc() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeJokeNotExistsCounterInc", reflect.TypeOf((*MockMetrics)(nil).DescribeJokeNotExistsCounterInc))
+}
+
 // ListJokeCounterInc mocks base method.
 func (m *MockMetrics) ListJokeCounterInc() {
 	m.ctrl.T.Helper()
@@ -213,6 +225,18 @@ func (m *MockMetrics) MultiCreateJokeCounterInc() {
 func (mr *MockMetricsMockRecorder) MultiCreateJokeCounterInc() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiCreateJokeCounterInc", reflect.TypeOf((*MockMetrics)(nil).MultiCreateJokeCounterInc))
+}
+
+// MultiCreateJokeFailedCounterInc mocks base method.
+func (m *MockMetrics) MultiCreateJokeFailedCounterInc() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "MultiCreateJokeFailedCounterInc")
+}
+
+// MultiCreateJokeFailedCounterInc indicates an expected call of MultiCreateJokeFailedCounterInc.
+func (mr *MockMetricsMockRecorder) MultiCreateJokeFailedCounterInc() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiCreateJokeFailedCounterInc", reflect.TypeOf((*MockMetrics)(nil).MultiCreateJokeFailedCounterInc))
 }
 
 // RemoveJokeCounterInc mocks base method.

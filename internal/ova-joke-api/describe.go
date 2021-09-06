@@ -31,6 +31,7 @@ func (j *JokeAPI) DescribeJoke(_ context.Context, req *pb.DescribeJokeRequest) (
 		if errors.Is(err, sql.ErrNoRows) {
 			msg := fmt.Sprintf("joke with id=%d not found", req.GetId())
 			log.Warn().Msg(msg)
+			j.metrics.DescribeJokeNotExistsCounterInc()
 			return nil, status.Error(codes.NotFound, msg)
 		}
 		msg := fmt.Sprintf("described failed: %v", err)

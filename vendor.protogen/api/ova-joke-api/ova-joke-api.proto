@@ -51,6 +51,7 @@ message MultiCreateJokeRequest {
 }
 
 message MultiCreateJokeResponse {
+  repeated Joke failed_jokes = 1;
 }
 
 message DescribeJokeRequest {

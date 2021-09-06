@@ -18,6 +18,14 @@ import (
 
 var errTestService = errors.New("some-service-error")
 
+func jokeToPbJoke(j *models.Joke) *pb.Joke {
+	return &pb.Joke{
+		Id:       j.ID,
+		Text:     j.Text,
+		AuthorId: j.AuthorID,
+	}
+}
+
 var _ = Describe("OvaJokeApi", func() {
 	zerolog.SetGlobalLevel(zerolog.Disabled)
 	var (
@@ -97,6 +105,7 @@ var _ = Describe("OvaJokeApi", func() {
 
 		It("joke not exists", func() {
 			mockRepo.EXPECT().DescribeJoke(jokeID).Return(nil, sql.ErrNoRows).Times(1)
+			mockMetrics.EXPECT().DescribeJokeNotExistsCounterInc().Times(1)
 
 			resp, err := srv.DescribeJoke(ctx, &pb.DescribeJokeRequest{
 				Id: jokeID,
@@ -210,6 +219,73 @@ var _ = Describe("OvaJokeApi", func() {
 
 			Expect(err).ShouldNot(Succeed())
 			Expect(resp).To(BeEquivalentTo(&pb.UpdateJokeResponse{}))
+		})
+	})
+
+	Context("Multi create joke", func() {
+		BeforeEach(func() {
+			jokes = []models.Joke{
+				{ID: 1, Text: "joke#1", AuthorID: 11},
+				{ID: 2, Text: "joke#2", AuthorID: 22},
+				{ID: 3, Text: "joke#3", AuthorID: 33},
+			}
+		})
+		It("successfully done", func() {
+			mockFlusher.EXPECT().Flush(gomock.Any(), jokes).Times(1).Return([]models.Joke{})
+			mockMetrics.EXPECT().MultiCreateJokeCounterInc().Times(1)
+
+			var reqJokes []*pb.Joke
+			for i := range jokes {
+				reqJokes = append(reqJokes, jokeToPbJoke(&jokes[i]))
+			}
+			resp, err := srv.MultiCreateJoke(ctx, &pb.MultiCreateJokeRequest{
+				Jokes: reqJokes,
+			})
+
+			Expect(err).Should(Succeed())
+			Expect(resp).To(BeEquivalentTo(&pb.MultiCreateJokeResponse{}))
+		})
+
+		It("failed part of create", func() {
+			failedJokes := jokes[1:]
+			mockFlusher.EXPECT().Flush(gomock.Any(), jokes).Times(1).Return(failedJokes)
+			mockMetrics.EXPECT().MultiCreateJokeFailedCounterInc().Times(1)
+
+			var reqJokes []*pb.Joke
+			for i := range jokes {
+				reqJokes = append(reqJokes, jokeToPbJoke(&jokes[i]))
+			}
+			resp, err := srv.MultiCreateJoke(ctx, &pb.MultiCreateJokeRequest{
+				Jokes: reqJokes,
+			})
+
+			Expect(err).Should(Succeed())
+			for i, fj := range resp.FailedJokes {
+				Expect(fj.Id).To(BeEquivalentTo(failedJokes[i].ID))
+				Expect(fj.Text).To(BeEquivalentTo(failedJokes[i].Text))
+				Expect(fj.AuthorId).To(BeEquivalentTo(failedJokes[i].AuthorID))
+			}
+		})
+
+		It("failed all of create", func() {
+			failedJokes := jokes
+			mockFlusher.EXPECT().Flush(gomock.Any(), jokes).Times(1).Return(failedJokes)
+			mockMetrics.EXPECT().MultiCreateJokeFailedCounterInc().Times(1)
+
+			var reqJokes []*pb.Joke
+			for i := range jokes {
+				reqJokes = append(reqJokes, jokeToPbJoke(&jokes[i]))
+			}
+			resp, err := srv.MultiCreateJoke(ctx, &pb.MultiCreateJokeRequest{
+				Jokes: reqJokes,
+			})
+
+			Expect(err).Should(Succeed())
+			for i, fj := range resp.FailedJokes {
+				Expect(fj.Id).To(BeEquivalentTo(failedJokes[i].ID))
+				Expect(fj.Text).To(BeEquivalentTo(failedJokes[i].Text))
+				Expect(fj.AuthorId).To(BeEquivalentTo(failedJokes[i].AuthorID))
+			}
 		})
 	})
 })

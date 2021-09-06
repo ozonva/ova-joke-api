@@ -25,6 +25,17 @@ func MultiCreateJokeRequestToJokes(req *pb.MultiCreateJokeRequest) []models.Joke
 	return jokes
 }
 
+func failedJokesToMultiCreateJokeResponse(jokes []models.Joke) *pb.MultiCreateJokeResponse {
+	responseJokes := make([]*pb.Joke, 0, len(jokes))
+	for i := range jokes {
+		responseJokes = append(responseJokes, jokeToPbJoke(&jokes[i]))
+	}
+
+	return &pb.MultiCreateJokeResponse{
+		FailedJokes: responseJokes,
+	}
+}
+
 // MultiCreateJoke create many new jokes asynchronously.
 func (j *JokeAPI) MultiCreateJoke(
 	ctx context.Context,
@@ -40,10 +51,14 @@ func (j *JokeAPI) MultiCreateJoke(
 	)
 	defer span.Finish()
 
-	j.flusher.Flush(opentracing.ContextWithSpan(ctx, span), jokes)
+	failedJokes := j.flusher.Flush(opentracing.ContextWithSpan(ctx, span), jokes)
+	if len(failedJokes) > 0 {
+		log.Warn().Msgf("multiple created failed for %d/%d jokes", len(failedJokes), len(jokes))
+		j.metrics.MultiCreateJokeFailedCounterInc()
+		return failedJokesToMultiCreateJokeResponse(failedJokes), nil
+	}
 
 	log.Info().Msgf("multiple created %d jokes", len(jokes))
-
 	j.metrics.MultiCreateJokeCounterInc()
 	return &pb.MultiCreateJokeResponse{}, nil
 }

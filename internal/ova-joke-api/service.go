@@ -24,8 +24,10 @@ type Flusher interface {
 type Metrics interface {
 	CreateJokeCounterInc()
 	MultiCreateJokeCounterInc()
+	MultiCreateJokeFailedCounterInc()
 	ListJokeCounterInc()
 	DescribeJokeCounterInc()
+	DescribeJokeNotExistsCounterInc()
 	UpdateJokeCounterInc()
 	RemoveJokeCounterInc()
 }
