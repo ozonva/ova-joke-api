@@ -51,3 +51,11 @@ services:
       - "9091:9090"
     volumes:
       - "./.docker/prometheus/config:/etc/prometheus"
+
+  godoc:
+    container_name: joke-api-doc
+    build: ./.docker/godoc/
+    volumes:
+      - ./:/app:ro
+    ports:
+      - "9099:8088"

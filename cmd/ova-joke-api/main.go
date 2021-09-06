@@ -45,8 +45,8 @@ var (
 
 func init() {
 	flag.StringVar(&grpcPort, "port", "0.0.0.0:9090", "port for gRPC api server")
-	flag.StringVar(&dbHost, "db-host", "localhost", "port for gRPC api server")
 
+	flag.StringVar(&dbHost, "db-host", "localhost", "host for database")
 	flag.UintVar(&dbPort, "db-port", 5432, "database port")
 	flag.StringVar(&dbName, "db-name", "postgres", "database name")
 	flag.StringVar(&dbUser, "db-user", "postgres", "database user name")
@@ -54,7 +54,7 @@ func init() {
 
 	flag.StringVar(&metricsAddr, "metrics-addr", "0.0.0.0:9093", "addr of metrics exporter api")
 
-	flag.StringVar(&brokerAddrsArg, "broker-addr", "0.0.0.0:9092", "coma separated list of brokers addrs")
+	flag.StringVar(&brokerAddrsArg, "broker-addr", "0.0.0.0:9092", "comma separated list of brokers addrs")
 }
 
 func run(_ context.Context, r *repo.JokePgRepo, f api.Flusher, m *metrics.Metrics, pr api.Producer) error {
