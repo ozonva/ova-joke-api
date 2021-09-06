@@ -47,3 +47,6 @@ jobs:
 
       - name: Unit tests
         run: go test -tags=test_unit -v -count=1 -race -timeout=1m ./...
+
+      - name: Code coverage
+        run: bash <(curl -s https://codecov.io/bash)
