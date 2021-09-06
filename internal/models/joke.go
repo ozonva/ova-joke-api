@@ -11,9 +11,9 @@ type (
 )
 
 type Joke struct {
-	ID       uint64 `json:"id"`
-	Text     string `json:"text"`
-	AuthorID uint64 `json:"authorId,omitempty"`
+	ID       uint64 `json:"id" db:"id"`
+	Text     string `json:"text" db:"text"`
+	AuthorID uint64 `json:"authorId,omitempty" db:"author_id"`
 }
 
 func (j Joke) String() string {

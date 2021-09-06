@@ -30,12 +30,12 @@ message Joke {
 }
 
 message CreateJokeRequest {
-  string text = 1;
-  uint64 author_id = 2;
+  uint64 id = 1;
+  string text = 2;
+  uint64 author_id = 3;
 }
 
 message CreateJokeResponse {
-  uint64 id = 1;
 }
 
 message DescribeJokeRequest {
@@ -49,6 +49,8 @@ message DescribeJokeResponse {
 }
 
 message ListJokeRequest {
+  uint64 limit = 1;
+  uint64 offset = 2;
 }
 
 message ListJokeResponse {
