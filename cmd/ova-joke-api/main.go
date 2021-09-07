@@ -3,14 +3,18 @@ package main
 import (
 	"context"
 	"fmt"
-	"net"
+	"net/http"
 	"os"
+	"os/signal"
+	"sync"
+	"syscall"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/opentracing/opentracing-go"
-	"github.com/opentracing/opentracing-go/log"
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/pflag"
 	"google.golang.org/grpc"
 
@@ -22,7 +26,6 @@ import (
 	"github.com/ozonva/ova-joke-api/internal/producer"
 	"github.com/ozonva/ova-joke-api/internal/repo"
 	"github.com/ozonva/ova-joke-api/internal/tracer"
-	desc "github.com/ozonva/ova-joke-api/pkg/ova-joke-api"
 )
 
 const serviceName = "ova-joke-api"
@@ -57,29 +60,6 @@ func init() {
 	pflag.StringSliceVar(&brokerAddrs, "broker.addrs", []string{"0.0.0.0:9092"}, "comma separated list of brokers addrs")
 }
 
-func run(
-	_ context.Context,
-	config configs.GRPCServerConfig,
-	r *repo.JokePgRepo,
-	f api.Flusher,
-	m *metrics.Metrics,
-	pr api.Producer,
-) error {
-	listen, err := net.Listen("tcp", config.Addr)
-	if err != nil {
-		return fmt.Errorf("failed to listen: %w", err)
-	}
-
-	grpcSrv := grpc.NewServer(grpc.ChainUnaryInterceptor(newInterceptorWithTrace()))
-	desc.RegisterJokeServiceServer(grpcSrv, api.NewJokeAPI(r, f, m, pr))
-
-	if err := grpcSrv.Serve(listen); err != nil {
-		return fmt.Errorf("failed to serve: %w", err)
-	}
-
-	return nil
-}
-
 func createDB(config configs.DBConfig) *sqlx.DB {
 	db, err := sqlx.Connect("postgres", config.GetDSN())
 	if err != nil {
@@ -97,7 +77,19 @@ func createJokeFlusher(r *repo.JokePgRepo, config configs.FlusherConfig) *flushe
 	return flusher.NewJokeFlusher(config.ChunkSize, r)
 }
 
+func initSignalHandler() <-chan os.Signal {
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	return done
+}
+
 func main() {
+	serviceGlobalWg := &sync.WaitGroup{}
+	defer serviceGlobalWg.Wait()
+
+	serviceGlobalCtx, cancel := context.WithCancel(context.Background())
+
 	// configure logger
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
@@ -122,8 +114,7 @@ func main() {
 
 	// create metric storage and run handler for prometheus
 	counters := metrics.NewMetrics()
-	metricsSrv := metrics.NewServer()
-	metricsSrv.Run(cfg.Metrics)
+	metricsSrv := metrics.Run(serviceGlobalWg, cfg.Metrics)
 
 	// create opentracing client (jaeger)
 	tr, closer := tracer.Init(serviceName)
@@ -143,24 +134,49 @@ func main() {
 	}
 
 	// start api grpc server
-	if err := run(context.Background(), cfg.GRPC, dbRepo, fl, counters, pr); err != nil {
+	grpcSrv, err := api.Run(serviceGlobalWg, cfg.GRPC, dbRepo, fl, counters, pr)
+	if err != nil {
 		panic(err)
 	}
+
+	// blocks execution till one of: os.Signal received, global ctx Done
+	handleTermination(serviceGlobalCtx, cancel, grpcSrv, metricsSrv)
 }
 
-// newInterceptorWithTrace wraps all gRPC calls with tracer's span.
-func newInterceptorWithTrace() grpc.UnaryServerInterceptor {
-	return func(
-		ctx context.Context, req interface{},
-		info *grpc.UnaryServerInfo,
-		handler grpc.UnaryHandler,
-	) (resp interface{}, err error) {
-		trace := opentracing.GlobalTracer()
-		span := trace.StartSpan(info.FullMethod)
-		span.LogFields(
-			log.String("request", fmt.Sprintf("%v", req)),
-		)
-		defer span.Finish()
-		return handler(opentracing.ContextWithSpan(ctx, span), req)
+func handleTermination(
+	globalCtx context.Context,
+	globalCtxCancel context.CancelFunc,
+	grpcSrv *grpc.Server,
+	metricsSrv *http.Server,
+) {
+	sigCh := initSignalHandler()
+
+	for {
+		select {
+		case <-sigCh:
+			log.Info().Msg("terminate signal received, gracefully terminate")
+			globalCtxCancel()
+
+		case <-globalCtx.Done():
+			if err := globalCtx.Err(); err != nil {
+				log.Warn().Msgf("global ctx closed with error: %v", err)
+			} else {
+				log.Info().Msg("global ctx closed")
+			}
+			log.Info().Msg("terminate gRPC server...")
+			grpcSrv.GracefulStop()
+			log.Info().Msg("done")
+
+			ctxWithTO, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+			log.Info().Msg("terminate metrics server...")
+			err := metricsSrv.Shutdown(ctxWithTO)
+			if err != nil {
+				log.Warn().Msgf("terminate metrics server failed %v", err)
+			}
+			log.Info().Msg("done")
+
+			return
+		}
 	}
 }

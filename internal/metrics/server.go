@@ -1,25 +1,36 @@
 package metrics
 
 import (
+	"errors"
 	"net/http"
+	"sync"
 
+	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/ozonva/ova-joke-api/internal/configs"
 )
 
-type MetricServer struct{}
+func Run(wg *sync.WaitGroup, config configs.MetricsServerConfig) *http.Server {
+	router := mux.NewRouter()
+	router.Handle("/metrics", promhttp.Handler())
 
-func NewServer() *MetricServer {
-	return &MetricServer{}
-}
+	srv := &http.Server{
+		Addr:    config.Addr,
+		Handler: router,
+	}
 
-func (srv *MetricServer) Run(config configs.MetricsServerConfig) {
+	wg.Add(1)
 	go func() {
-		http.Handle("/metrics", promhttp.Handler())
-		err := http.ListenAndServe(config.Addr, nil)
+		defer wg.Done()
+
+		err := srv.ListenAndServe()
 		if err != nil {
-			panic(err)
+			if !errors.Is(err, http.ErrServerClosed) {
+				panic(err)
+			}
 		}
 	}()
+
+	return srv
 }

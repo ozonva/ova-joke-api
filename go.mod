@@ -9,6 +9,7 @@ require (
 	github.com/benbjohnson/clock v1.1.0
 	github.com/fsnotify/fsnotify v1.5.0 // indirect
 	github.com/golang/mock v1.6.0
+	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/lib/pq v1.10.2
 	github.com/onsi/ginkgo v1.16.4
