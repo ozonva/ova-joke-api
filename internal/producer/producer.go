@@ -8,6 +8,7 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/log"
 
+	"github.com/ozonva/ova-joke-api/internal/configs"
 	"github.com/ozonva/ova-joke-api/internal/models"
 )
 
@@ -15,8 +16,8 @@ type Producer struct {
 	sarama.SyncProducer
 }
 
-func NewProducer(brokers []string) (*Producer, error) {
-	producer, err := sarama.NewSyncProducer(brokers, nil)
+func NewProducer(config configs.BrokerConfig) (*Producer, error) {
+	producer, err := sarama.NewSyncProducer(config.Addrs, nil)
 	if err != nil {
 		return nil, err
 	}
