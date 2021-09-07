@@ -6,10 +6,9 @@ package repo
 import (
 	"database/sql"
 	"errors"
-	"testing"
-
 	"github.com/stretchr/testify/require"
 	sqlxmock "github.com/zhashkevych/go-sqlxmock"
+	"testing"
 
 	"github.com/ozonva/ova-joke-api/internal/models"
 )

@@ -3,7 +3,6 @@ package ova_joke_api //nolint:revive,stylecheck
 import (
 	"context"
 	"fmt"
-
 	"github.com/opentracing/opentracing-go"
 	tracelog "github.com/opentracing/opentracing-go/log"
 	"github.com/rs/zerolog/log"

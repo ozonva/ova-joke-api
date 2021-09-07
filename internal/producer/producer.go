@@ -3,7 +3,6 @@ package producer
 import (
 	"context"
 	"fmt"
-
 	"github.com/Shopify/sarama"
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/log"

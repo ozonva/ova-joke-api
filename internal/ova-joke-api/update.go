@@ -3,7 +3,6 @@ package ova_joke_api //nolint:revive,stylecheck
 import (
 	"context"
 	"fmt"
-
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

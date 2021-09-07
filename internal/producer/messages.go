@@ -2,7 +2,6 @@ package producer
 
 import (
 	"encoding/json"
-
 	"github.com/Shopify/sarama"
 )
 

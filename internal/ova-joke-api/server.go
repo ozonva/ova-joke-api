@@ -3,12 +3,11 @@ package ova_joke_api //nolint:revive,stylecheck
 import (
 	"context"
 	"fmt"
-	"net"
-	"sync"
-
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/log"
 	"google.golang.org/grpc"
+	"net"
+	"sync"
 
 	"github.com/ozonva/ova-joke-api/internal/configs"
 	"github.com/ozonva/ova-joke-api/internal/metrics"

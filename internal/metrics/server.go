@@ -2,11 +2,10 @@ package metrics
 
 import (
 	"errors"
-	"net/http"
-	"sync"
-
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"net/http"
+	"sync"
 
 	"github.com/ozonva/ova-joke-api/internal/configs"
 )

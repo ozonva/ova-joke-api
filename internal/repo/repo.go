@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-
 	sq "github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
 

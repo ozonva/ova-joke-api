@@ -114,24 +114,28 @@ type JokeServiceServer interface {
 }
 
 // UnimplementedJokeServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedJokeServiceServer struct {
-}
+type UnimplementedJokeServiceServer struct{}
 
 func (UnimplementedJokeServiceServer) CreateJoke(context.Context, *CreateJokeRequest) (*CreateJokeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateJoke not implemented")
 }
+
 func (UnimplementedJokeServiceServer) MultiCreateJoke(context.Context, *MultiCreateJokeRequest) (*MultiCreateJokeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MultiCreateJoke not implemented")
 }
+
 func (UnimplementedJokeServiceServer) DescribeJoke(context.Context, *DescribeJokeRequest) (*DescribeJokeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DescribeJoke not implemented")
 }
+
 func (UnimplementedJokeServiceServer) ListJoke(context.Context, *ListJokeRequest) (*ListJokeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListJoke not implemented")
 }
+
 func (UnimplementedJokeServiceServer) UpdateJoke(context.Context, *UpdateJokeRequest) (*UpdateJokeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateJoke not implemented")
 }
+
 func (UnimplementedJokeServiceServer) RemoveJoke(context.Context, *RemoveJokeRequest) (*RemoveJokeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveJoke not implemented")
 }

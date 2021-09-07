@@ -788,22 +788,25 @@ func file_api_ova_joke_api_ova_joke_api_proto_rawDescGZIP() []byte {
 	return file_api_ova_joke_api_ova_joke_api_proto_rawDescData
 }
 
-var file_api_ova_joke_api_ova_joke_api_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
-var file_api_ova_joke_api_ova_joke_api_proto_goTypes = []interface{}{
-	(*Joke)(nil),                    // 0: ozonva.ova_joke_api.Joke
-	(*CreateJokeRequest)(nil),       // 1: ozonva.ova_joke_api.CreateJokeRequest
-	(*CreateJokeResponse)(nil),      // 2: ozonva.ova_joke_api.CreateJokeResponse
-	(*MultiCreateJokeRequest)(nil),  // 3: ozonva.ova_joke_api.MultiCreateJokeRequest
-	(*MultiCreateJokeResponse)(nil), // 4: ozonva.ova_joke_api.MultiCreateJokeResponse
-	(*DescribeJokeRequest)(nil),     // 5: ozonva.ova_joke_api.DescribeJokeRequest
-	(*DescribeJokeResponse)(nil),    // 6: ozonva.ova_joke_api.DescribeJokeResponse
-	(*ListJokeRequest)(nil),         // 7: ozonva.ova_joke_api.ListJokeRequest
-	(*ListJokeResponse)(nil),        // 8: ozonva.ova_joke_api.ListJokeResponse
-	(*UpdateJokeRequest)(nil),       // 9: ozonva.ova_joke_api.UpdateJokeRequest
-	(*UpdateJokeResponse)(nil),      // 10: ozonva.ova_joke_api.UpdateJokeResponse
-	(*RemoveJokeRequest)(nil),       // 11: ozonva.ova_joke_api.RemoveJokeRequest
-	(*RemoveJokeResponse)(nil),      // 12: ozonva.ova_joke_api.RemoveJokeResponse
-}
+var (
+	file_api_ova_joke_api_ova_joke_api_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+	file_api_ova_joke_api_ova_joke_api_proto_goTypes  = []interface{}{
+		(*Joke)(nil),                    // 0: ozonva.ova_joke_api.Joke
+		(*CreateJokeRequest)(nil),       // 1: ozonva.ova_joke_api.CreateJokeRequest
+		(*CreateJokeResponse)(nil),      // 2: ozonva.ova_joke_api.CreateJokeResponse
+		(*MultiCreateJokeRequest)(nil),  // 3: ozonva.ova_joke_api.MultiCreateJokeRequest
+		(*MultiCreateJokeResponse)(nil), // 4: ozonva.ova_joke_api.MultiCreateJokeResponse
+		(*DescribeJokeRequest)(nil),     // 5: ozonva.ova_joke_api.DescribeJokeRequest
+		(*DescribeJokeResponse)(nil),    // 6: ozonva.ova_joke_api.DescribeJokeResponse
+		(*ListJokeRequest)(nil),         // 7: ozonva.ova_joke_api.ListJokeRequest
+		(*ListJokeResponse)(nil),        // 8: ozonva.ova_joke_api.ListJokeResponse
+		(*UpdateJokeRequest)(nil),       // 9: ozonva.ova_joke_api.UpdateJokeRequest
+		(*UpdateJokeResponse)(nil),      // 10: ozonva.ova_joke_api.UpdateJokeResponse
+		(*RemoveJokeRequest)(nil),       // 11: ozonva.ova_joke_api.RemoveJokeRequest
+		(*RemoveJokeResponse)(nil),      // 12: ozonva.ova_joke_api.RemoveJokeResponse
+	}
+)
+
 var file_api_ova_joke_api_ova_joke_api_proto_depIdxs = []int32{
 	0,  // 0: ozonva.ova_joke_api.MultiCreateJokeRequest.jokes:type_name -> ozonva.ova_joke_api.Joke
 	0,  // 1: ozonva.ova_joke_api.MultiCreateJokeResponse.failed_jokes:type_name -> ozonva.ova_joke_api.Joke

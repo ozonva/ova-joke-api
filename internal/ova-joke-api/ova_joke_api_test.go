@@ -12,7 +12,7 @@ import (
 
 	mocks "github.com/ozonva/ova-joke-api/internal/mocks/service"
 	"github.com/ozonva/ova-joke-api/internal/models"
-	ova_joke_api "github.com/ozonva/ova-joke-api/internal/ova-joke-api"
+	api "github.com/ozonva/ova-joke-api/internal/ova-joke-api"
 	pb "github.com/ozonva/ova-joke-api/pkg/ova-joke-api"
 )
 
@@ -48,7 +48,7 @@ var _ = Describe("OvaJokeApi", func() {
 		mockMetrics = mocks.NewMockMetrics(ctrl)
 		mockProducer = mocks.NewMockProducer(ctrl)
 
-		srv = ova_joke_api.NewJokeAPI(mockRepo, mockFlusher, mockMetrics, mockProducer)
+		srv = api.NewJokeAPI(mockRepo, mockFlusher, mockMetrics, mockProducer)
 		ctx = context.TODO()
 		jokes = []models.Joke{{ID: 3, Text: "joke #3", AuthorID: 33}}
 		jokeID = 3

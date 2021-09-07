@@ -2,14 +2,13 @@ package saver
 
 import (
 	"context"
-	"runtime"
-	"strconv"
-	"time"
-
 	"github.com/benbjohnson/clock"
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"runtime"
+	"strconv"
+	"time"
 
 	mock "github.com/ozonva/ova-joke-api/internal/mocks/saver"
 	"github.com/ozonva/ova-joke-api/internal/models"

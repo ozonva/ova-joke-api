@@ -2,11 +2,10 @@ package configs
 
 import (
 	"fmt"
-	"strings"
-
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"strings"
 )
 
 const envPrefix = "ova"

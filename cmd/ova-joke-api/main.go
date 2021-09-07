@@ -3,13 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"net/http"
-	"os"
-	"os/signal"
-	"sync"
-	"syscall"
-	"time"
-
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/opentracing/opentracing-go"
@@ -17,6 +10,12 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/pflag"
 	"google.golang.org/grpc"
+	"net/http"
+	"os"
+	"os/signal"
+	"sync"
+	"syscall"
+	"time"
 
 	"github.com/ozonva/ova-joke-api/internal/app/hellower"
 	"github.com/ozonva/ova-joke-api/internal/configs"

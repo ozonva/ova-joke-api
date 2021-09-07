@@ -4,10 +4,9 @@
 package utils
 
 import (
+	"github.com/stretchr/testify/require"
 	"strconv"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 
 	"github.com/ozonva/ova-joke-api/internal/models"
 )
