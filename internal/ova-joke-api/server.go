@@ -7,7 +7,6 @@ import (
 	traceLog "github.com/opentracing/opentracing-go/log"
 	"google.golang.org/grpc"
 	"net"
-	"sync"
 
 	"github.com/ozonva/ova-joke-api/internal/configs"
 	log "github.com/ozonva/ova-joke-api/internal/logger"
@@ -17,36 +16,30 @@ import (
 )
 
 func Run(
-	wg *sync.WaitGroup,
+	grpcSrv *grpc.Server,
 	config configs.GRPCServerConfig,
 	r *repo.JokePgRepo,
 	f Flusher,
 	m *metrics.Metrics,
 	pr Producer,
-) (*grpc.Server, error) {
+) error {
 	listen, err := net.Listen("tcp", config.Addr)
 	if err != nil {
-		return nil, fmt.Errorf("failed to listen: %w", err)
+		return fmt.Errorf("failed to listen: %w", err)
 	}
 
-	grpcSrv := grpc.NewServer(grpc.ChainUnaryInterceptor(newInterceptorWithTrace()))
 	desc.RegisterJokeServiceServer(grpcSrv, NewJokeAPI(r, f, m, pr))
 
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
+	log.Infof("start listen gRPC API on %s", config.Addr)
+	if err := grpcSrv.Serve(listen); err != nil {
+		panic(fmt.Errorf("failed to serve: %w", err))
+	}
 
-		log.Infof("start listen gRPC API on %s", config.Addr)
-		if err := grpcSrv.Serve(listen); err != nil {
-			panic(fmt.Errorf("failed to serve: %w", err))
-		}
-	}()
-
-	return grpcSrv, nil
+	return nil
 }
 
-// newInterceptorWithTrace wraps all gRPC calls with tracer's span.
-func newInterceptorWithTrace() grpc.UnaryServerInterceptor {
+// NewInterceptorWithTrace wraps all gRPC calls with tracer's span.
+func NewInterceptorWithTrace() grpc.UnaryServerInterceptor {
 	return func(
 		ctx context.Context, req interface{},
 		info *grpc.UnaryServerInfo,

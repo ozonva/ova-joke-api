@@ -1,19 +1,15 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/opentracing/opentracing-go"
 	"github.com/spf13/pflag"
 	"google.golang.org/grpc"
-	"net/http"
 	"os"
 	"os/signal"
-	"sync"
 	"syscall"
-	"time"
 
 	"github.com/ozonva/ova-joke-api/internal/app/hellower"
 	"github.com/ozonva/ova-joke-api/internal/configs"
@@ -83,11 +79,6 @@ func initSignalHandler() <-chan os.Signal {
 }
 
 func main() {
-	serviceGlobalWg := &sync.WaitGroup{}
-	defer serviceGlobalWg.Wait()
-
-	serviceGlobalCtx, cancel := context.WithCancel(context.Background())
-
 	// read configs, env variables and flags
 	cfg, err := configs.GetConfig()
 	if err != nil {
@@ -109,7 +100,7 @@ func main() {
 
 	// create metric storage and run handler for prometheus
 	counters := metrics.NewMetrics()
-	metricsSrv := metrics.Run(serviceGlobalWg, cfg.Metrics)
+	metrics.Run(cfg.Metrics)
 
 	// create opentracing client (jaeger)
 	tr, closer := tracer.Init(serviceName)
@@ -129,49 +120,22 @@ func main() {
 	}
 
 	// start api grpc server
-	grpcSrv, err := api.Run(serviceGlobalWg, cfg.GRPC, dbRepo, fl, counters, pr)
-	if err != nil {
+	grpcSrv := grpc.NewServer(grpc.ChainUnaryInterceptor(api.NewInterceptorWithTrace()))
+
+	go handleTermination(grpcSrv)
+
+	if err := api.Run(grpcSrv, cfg.GRPC, dbRepo, fl, counters, pr); err != nil {
 		panic(err)
 	}
-
-	// blocks execution till one of: os.Signal received, global ctx Done
-	handleTermination(serviceGlobalCtx, cancel, grpcSrv, metricsSrv)
 }
 
 func handleTermination(
-	globalCtx context.Context,
-	globalCtxCancel context.CancelFunc,
 	grpcSrv *grpc.Server,
-	metricsSrv *http.Server,
 ) {
 	sigCh := initSignalHandler()
-
-	for {
-		select {
-		case <-sigCh:
-			log.Infof("terminate signal received, gracefully terminate")
-			globalCtxCancel()
-
-		case <-globalCtx.Done():
-			if err := globalCtx.Err(); err != nil {
-				log.Warnf("global ctx closed with error: %v", err)
-			} else {
-				log.Infof("global ctx closed")
-			}
-			log.Infof("terminate gRPC server...")
-			grpcSrv.GracefulStop()
-			log.Infof("done")
-
-			ctxWithTO, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-			defer cancel()
-			log.Infof("terminate metrics server...")
-			err := metricsSrv.Shutdown(ctxWithTO)
-			if err != nil {
-				log.Warnf("terminate metrics server failed %v", err)
-			}
-			log.Infof("done")
-
-			return
-		}
+	for range sigCh {
+		log.Infof("terminate signal received, gracefully terminate")
+		grpcSrv.GracefulStop()
+		log.Infof("done")
 	}
 }
