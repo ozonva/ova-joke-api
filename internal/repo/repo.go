@@ -95,6 +95,17 @@ func (j JokePgRepo) UpdateJoke(joke models.Joke) error {
 	return err
 }
 
+// HealthCheckJoke send query into database and check weather database connection alive and table joke exists.
+func (j JokePgRepo) HealthCheckJoke() error {
+	if _, err := j.DescribeJoke(models.JokeID(1)); err != nil {
+		if !errors.Is(err, sql.ErrNoRows) {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func NewJokePgRepo(db *sqlx.DB) *JokePgRepo {
 	return &JokePgRepo{
 		db: db,

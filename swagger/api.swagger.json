@@ -31,6 +31,19 @@
         }
       }
     },
+    "ova_joke_apiHealthCheckResponse": {
+      "type": "object",
+      "properties": {
+        "grpc": {
+          "type": "string",
+          "format": "int64"
+        },
+        "database": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
     "ova_joke_apiJoke": {
       "type": "object",
       "properties": {

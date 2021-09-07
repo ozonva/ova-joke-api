@@ -64,6 +64,20 @@ func (mr *MockRepoMockRecorder) DescribeJoke(jokeID interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeJoke", reflect.TypeOf((*MockRepo)(nil).DescribeJoke), jokeID)
 }
 
+// HealthCheckJoke mocks base method.
+func (m *MockRepo) HealthCheckJoke() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HealthCheckJoke")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// HealthCheckJoke indicates an expected call of HealthCheckJoke.
+func (mr *MockRepoMockRecorder) HealthCheckJoke() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HealthCheckJoke", reflect.TypeOf((*MockRepo)(nil).HealthCheckJoke))
+}
+
 // ListJokes mocks base method.
 func (m *MockRepo) ListJokes(limit, offset uint64) ([]models.Joke, error) {
 	m.ctrl.T.Helper()

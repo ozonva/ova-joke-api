@@ -14,6 +14,7 @@ type Repo interface {
 	DescribeJoke(jokeID models.JokeID) (*models.Joke, error)
 	UpdateJoke(joke models.Joke) error
 	RemoveJoke(jokeID models.JokeID) error
+	HealthCheckJoke() error
 }
 
 // Flusher interface to store jokes into repository.

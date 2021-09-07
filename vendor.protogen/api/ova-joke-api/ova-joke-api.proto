@@ -29,6 +29,10 @@ service JokeService {
   // RemoveJoke delete joke from storage.
   rpc RemoveJoke(RemoveJokeRequest) returns (RemoveJokeResponse) {
   }
+
+  // RemoveJoke delete joke from storage.
+  rpc HealthCheckJoke(HealthCheckRequest) returns (HealthCheckResponse) {
+  }
 }
 
 message Joke {
@@ -87,4 +91,12 @@ message RemoveJokeRequest {
 }
 
 message RemoveJokeResponse {
+}
+
+message HealthCheckRequest {
+}
+
+message HealthCheckResponse {
+  int64 grpc = 1;
+  int64 database = 2;
 }

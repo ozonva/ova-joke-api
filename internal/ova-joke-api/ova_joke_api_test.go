@@ -288,4 +288,33 @@ var _ = Describe("OvaJokeApi", func() {
 			}
 		})
 	})
+
+	Context("HealthCheck joke", func() {
+		It("successfully done", func() {
+			mockRepo.EXPECT().HealthCheckJoke().Times(1).Return(nil)
+			resp, err := srv.HealthCheckJoke(ctx, &pb.HealthCheckRequest{})
+
+			Expect(err).Should(Succeed())
+			Expect(resp.Grpc).To(BeEquivalentTo(1))
+			Expect(resp.Database).To(BeEquivalentTo(1))
+		})
+
+		It("successfully but no results", func() {
+			mockRepo.EXPECT().HealthCheckJoke().Times(1).Return(nil)
+			resp, err := srv.HealthCheckJoke(ctx, &pb.HealthCheckRequest{})
+
+			Expect(err).Should(Succeed())
+			Expect(resp.Grpc).To(BeEquivalentTo(1))
+			Expect(resp.Database).To(BeEquivalentTo(int64(1)))
+		})
+
+		It("failed with error", func() {
+			mockRepo.EXPECT().HealthCheckJoke().Times(1).Return(errTestService)
+			resp, err := srv.HealthCheckJoke(ctx, &pb.HealthCheckRequest{})
+
+			Expect(err).Should(Succeed())
+			Expect(resp.Grpc).To(BeEquivalentTo(1))
+			Expect(resp.Database).To(BeEquivalentTo(0))
+		})
+	})
 })
