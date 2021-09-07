@@ -2,14 +2,15 @@
 //
 // Command options:
 //
-//  -port, default "0.0.0.0:9090"- port for gRPC api server
-//  -db-host, default "localhost"- host for database
-//  -db-port, default "5432"- database port
-//  -db-name, default "postgres"- database name
-//  -db-user, default "postgres"- database user name
-//  -db-pass, default "postgres"- database users' password
-//  -metrics-addr, default "0.0.0.0:9093"- addr of metrics exporter api& used by prometheus
-//  -broker-addr, default "0.0.0.0:9092"- comma separated list of brokers addrs
+//  --grpc.addr         (OVA_GRPC_ADDR)         default: 0.0.0.0.9090  "addr:port" of gRPC server endpoint
+//  --flusher.chunksize (OVA_FLUSHER_CHUNKSIZE) default: 3              insert database batch size
+//  --db.host           (OVA_DB_HOST)           default: localhost      host for database
+//  --db.port           (OVA_DB_PORT)           default: 5432           database port
+//  --db.name           (OVA_DB_NAME)           default: postgres       database name
+//  --db.user           (OVA_DB_USER)           default: postgres       database user name
+//  --db.pass           (OVA_DB_PASS)           default: postgres       database user's password
+//  --metrics.addr      (OVA_METRICS_ADDR)      default: 0.0.0.0:9093   addr of metrics exporter api
+//  --broker.addrs      (OVA_BROKER_ADDRS)      default: [0.0.0.0:9092] addr of metrics exporter api
 //
 // Launch gRPC service:
 //
