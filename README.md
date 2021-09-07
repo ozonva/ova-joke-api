@@ -25,6 +25,7 @@
 | kafkaui      | Kowl- web ui for kafka, allow observe broker state   | 8087  |
 | jaeger       | Jaeger- tracing system                               | 16686 |
 | prometheus   | Prometheus- metric management system                 | 9091  |
+| grafana      | Project metrics visualization                        | 3000  |
 | godoc        | Documentation pages about project components and deps| 9099  |
 | gRPC API     | Application API endpoint                             | 9090  |
 | metrics API  | Application metrics endpoint for Prometheus          | 9093  |
