@@ -5,10 +5,10 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	log "github.com/ozonva/ova-joke-api/internal/logger"
 	"github.com/ozonva/ova-joke-api/internal/models"
 	pb "github.com/ozonva/ova-joke-api/pkg/ova-joke-api"
 )
@@ -23,23 +23,23 @@ func jokeToDescribeJokeResponse(j *models.Joke) *pb.DescribeJokeResponse {
 
 // DescribeJoke show full information about Joke entity.
 func (j *JokeAPI) DescribeJoke(_ context.Context, req *pb.DescribeJokeRequest) (*pb.DescribeJokeResponse, error) {
-	log.Info().Msgf("describe: %s", req.String())
+	log.Infof("describe: %s", req.String())
 
 	joke, err := j.repo.DescribeJoke(req.GetId())
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			msg := fmt.Sprintf("joke with id=%d not found", req.GetId())
-			log.Warn().Msg(msg)
+			log.Warnf(msg)
 			j.metrics.DescribeJokeNotExistsCounterInc()
 			return nil, status.Error(codes.NotFound, msg)
 		}
 		msg := fmt.Sprintf("described failed: %v", err)
-		log.Error().Msg(msg)
+		log.Errorf(msg)
 		return nil, status.Error(codes.Internal, msg)
 	}
 
 	resp := jokeToDescribeJokeResponse(joke)
-	log.Info().Msgf("described: %s", resp.String())
+	log.Infof("described: %s", resp.String())
 	j.metrics.DescribeJokeCounterInc()
 	return resp, nil
 }

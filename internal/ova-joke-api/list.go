@@ -3,21 +3,21 @@ package ova_joke_api //nolint:revive,stylecheck
 import (
 	"context"
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	log "github.com/ozonva/ova-joke-api/internal/logger"
 	pb "github.com/ozonva/ova-joke-api/pkg/ova-joke-api"
 )
 
 // ListJoke show list of jokes.
 func (j *JokeAPI) ListJoke(_ context.Context, req *pb.ListJokeRequest) (*pb.ListJokeResponse, error) {
-	log.Info().Msgf("list: %s", req.String())
+	log.Infof("list: %s", req.String())
 
 	jokes, err := j.repo.ListJokes(req.GetLimit(), req.GetOffset())
 	if err != nil {
 		msg := fmt.Sprintf("show list failed: %v", err)
-		log.Error().Msg(msg)
+		log.Errorf(msg)
 		return nil, status.Error(codes.Internal, msg)
 	}
 
@@ -30,7 +30,7 @@ func (j *JokeAPI) ListJoke(_ context.Context, req *pb.ListJokeRequest) (*pb.List
 		Jokes: respJokes,
 	}
 
-	log.Info().Msgf("list of %d element showed", len(resp.Jokes))
+	log.Infof("list of %d element showed", len(resp.Jokes))
 	j.metrics.ListJokeCounterInc()
 	return resp, nil
 }

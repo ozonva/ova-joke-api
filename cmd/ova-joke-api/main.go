@@ -6,8 +6,6 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/opentracing/opentracing-go"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"github.com/spf13/pflag"
 	"google.golang.org/grpc"
 	"net/http"
@@ -20,6 +18,7 @@ import (
 	"github.com/ozonva/ova-joke-api/internal/app/hellower"
 	"github.com/ozonva/ova-joke-api/internal/configs"
 	"github.com/ozonva/ova-joke-api/internal/flusher"
+	log "github.com/ozonva/ova-joke-api/internal/logger"
 	"github.com/ozonva/ova-joke-api/internal/metrics"
 	api "github.com/ozonva/ova-joke-api/internal/ova-joke-api"
 	"github.com/ozonva/ova-joke-api/internal/producer"
@@ -89,9 +88,6 @@ func main() {
 
 	serviceGlobalCtx, cancel := context.WithCancel(context.Background())
 
-	// configure logger
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-
 	// read configs, env variables and flags
 	cfg, err := configs.GetConfig()
 	if err != nil {
@@ -153,27 +149,27 @@ func handleTermination(
 	for {
 		select {
 		case <-sigCh:
-			log.Info().Msg("terminate signal received, gracefully terminate")
+			log.Infof("terminate signal received, gracefully terminate")
 			globalCtxCancel()
 
 		case <-globalCtx.Done():
 			if err := globalCtx.Err(); err != nil {
-				log.Warn().Msgf("global ctx closed with error: %v", err)
+				log.Warnf("global ctx closed with error: %v", err)
 			} else {
-				log.Info().Msg("global ctx closed")
+				log.Infof("global ctx closed")
 			}
-			log.Info().Msg("terminate gRPC server...")
+			log.Infof("terminate gRPC server...")
 			grpcSrv.GracefulStop()
-			log.Info().Msg("done")
+			log.Infof("done")
 
 			ctxWithTO, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
-			log.Info().Msg("terminate metrics server...")
+			log.Infof("terminate metrics server...")
 			err := metricsSrv.Shutdown(ctxWithTO)
 			if err != nil {
-				log.Warn().Msgf("terminate metrics server failed %v", err)
+				log.Warnf("terminate metrics server failed %v", err)
 			}
-			log.Info().Msg("done")
+			log.Infof("done")
 
 			return
 		}

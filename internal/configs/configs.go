@@ -2,10 +2,11 @@ package configs
 
 import (
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"strings"
+
+	log "github.com/ozonva/ova-joke-api/internal/logger"
 )
 
 const envPrefix = "ova"
@@ -77,7 +78,7 @@ func readConfig() error {
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok { //nolint:errorlint
-			log.Warn().Msgf("configuration file not found: %v", err)
+			log.Warnf("configuration file not found: %v", err)
 			return nil
 		}
 		return err

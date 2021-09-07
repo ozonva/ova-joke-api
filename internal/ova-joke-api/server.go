@@ -4,12 +4,13 @@ import (
 	"context"
 	"fmt"
 	"github.com/opentracing/opentracing-go"
-	"github.com/opentracing/opentracing-go/log"
+	traceLog "github.com/opentracing/opentracing-go/log"
 	"google.golang.org/grpc"
 	"net"
 	"sync"
 
 	"github.com/ozonva/ova-joke-api/internal/configs"
+	log "github.com/ozonva/ova-joke-api/internal/logger"
 	"github.com/ozonva/ova-joke-api/internal/metrics"
 	"github.com/ozonva/ova-joke-api/internal/repo"
 	desc "github.com/ozonva/ova-joke-api/pkg/ova-joke-api"
@@ -35,6 +36,7 @@ func Run(
 	go func() {
 		defer wg.Done()
 
+		log.Infof("start listen gRPC API on %s", config.Addr)
 		if err := grpcSrv.Serve(listen); err != nil {
 			panic(fmt.Errorf("failed to serve: %w", err))
 		}
@@ -53,7 +55,7 @@ func newInterceptorWithTrace() grpc.UnaryServerInterceptor {
 		trace := opentracing.GlobalTracer()
 		span := trace.StartSpan(info.FullMethod)
 		span.LogFields(
-			log.String("request", fmt.Sprintf("%v", req)),
+			traceLog.String("request", fmt.Sprintf("%v", req)),
 		)
 		defer span.Finish()
 		return handler(opentracing.ContextWithSpan(ctx, span), req)
