@@ -1,3 +1,4 @@
+// Package generates fixtures for jokes.
 package main
 
 import (

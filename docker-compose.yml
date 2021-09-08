@@ -51,3 +51,19 @@ services:
       - "9091:9090"
     volumes:
       - "./.docker/prometheus/config:/etc/prometheus"
+
+  godoc:
+    container_name: joke-api-doc
+    build: ./.docker/godoc/
+    volumes:
+      - ./:/app:ro
+    ports:
+      - "9099:8088"
+
+  grafana:
+    image: grafana/grafana:5.4.3
+    container_name: grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - ./.docker/grafana/provisioning/:/etc/grafana/provisioning

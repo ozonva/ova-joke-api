@@ -1,0 +1,19 @@
+grpc:
+  addr: "0.0.0.0:9090"
+
+flusher:
+  chunksize: 3
+
+db:
+  host: "localhost"
+  port: "5432"
+  name: "postgres"
+  user: "postgres"
+  pass: "postgres"
+
+metrics:
+  addr: "0.0.0.0:9093"
+
+broker:
+  addrs:
+    - "0.0.0.0:9092"

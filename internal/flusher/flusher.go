@@ -3,7 +3,6 @@ package flusher
 import (
 	"context"
 	"fmt"
-
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/log"
 

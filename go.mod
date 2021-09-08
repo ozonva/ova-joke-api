@@ -9,6 +9,7 @@ require (
 	github.com/benbjohnson/clock v1.1.0
 	github.com/fsnotify/fsnotify v1.5.0 // indirect
 	github.com/golang/mock v1.6.0
+	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/lib/pq v1.10.2
 	github.com/onsi/ginkgo v1.16.4
@@ -17,13 +18,14 @@ require (
 	github.com/ozonva/ova-joke-api/pkg/ova-joke-api v0.0.0-20210906100121-11e50c7e1e9e
 	github.com/prometheus/client_golang v1.11.0
 	github.com/rs/zerolog v1.24.0
+	github.com/spf13/pflag v1.0.5
+	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
 	github.com/uber/jaeger-client-go v2.29.1+incompatible
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/zhashkevych/go-sqlxmock v1.5.1
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/goleak v1.1.10
-	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
 	golang.org/x/net v0.0.0-20210825183410-e898025ed96a // indirect
 	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
 	golang.org/x/text v0.3.7 // indirect

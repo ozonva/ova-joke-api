@@ -1,10 +1,9 @@
 package ova_joke_api_test
 
 import (
-	"testing"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"testing"
 )
 
 func TestOvaJokeApi(t *testing.T) {

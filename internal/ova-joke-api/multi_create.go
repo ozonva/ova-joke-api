@@ -3,11 +3,10 @@ package ova_joke_api //nolint:revive,stylecheck
 import (
 	"context"
 	"fmt"
-
 	"github.com/opentracing/opentracing-go"
 	tracelog "github.com/opentracing/opentracing-go/log"
-	"github.com/rs/zerolog/log"
 
+	log "github.com/ozonva/ova-joke-api/internal/logger"
 	"github.com/ozonva/ova-joke-api/internal/models"
 	pb "github.com/ozonva/ova-joke-api/pkg/ova-joke-api"
 )
@@ -41,7 +40,7 @@ func (j *JokeAPI) MultiCreateJoke(
 	ctx context.Context,
 	req *pb.MultiCreateJokeRequest,
 ) (*pb.MultiCreateJokeResponse, error) {
-	log.Info().Msg("multiple create")
+	log.Infof("multiple create")
 
 	jokes := MultiCreateJokeRequestToJokes(req)
 
@@ -53,12 +52,12 @@ func (j *JokeAPI) MultiCreateJoke(
 
 	failedJokes := j.flusher.Flush(traceCtx, jokes)
 	if len(failedJokes) > 0 {
-		log.Warn().Msgf("multiple created failed for %d/%d jokes", len(failedJokes), len(jokes))
+		log.Warnf("multiple created failed for %d/%d jokes", len(failedJokes), len(jokes))
 		j.metrics.MultiCreateJokeFailedCounterInc()
 		return failedJokesToMultiCreateJokeResponse(failedJokes), nil
 	}
 
-	log.Info().Msgf("multiple created %d jokes", len(jokes))
+	log.Infof("multiple created %d jokes", len(jokes))
 	j.metrics.MultiCreateJokeCounterInc()
 	return &pb.MultiCreateJokeResponse{}, nil
 }

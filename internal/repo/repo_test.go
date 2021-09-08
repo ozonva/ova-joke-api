@@ -6,10 +6,9 @@ package repo
 import (
 	"database/sql"
 	"errors"
-	"testing"
-
 	"github.com/stretchr/testify/require"
 	sqlxmock "github.com/zhashkevych/go-sqlxmock"
+	"testing"
 
 	"github.com/ozonva/ova-joke-api/internal/models"
 )
@@ -342,6 +341,67 @@ func TestJokePgRepo_RemoveJoke(t *testing.T) {
 			if tt.wantErr {
 				require.Error(t, err)
 				require.ErrorIs(t, err, tt.err)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestJokePgRepo_HealthCheckJoke(t *testing.T) {
+	db, mock, err := sqlxmock.Newx()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	s := NewJokePgRepo(db)
+
+	tests := []struct {
+		s       *JokePgRepo
+		name    string
+		mock    func()
+		wantErr bool
+	}{
+		{
+			name: "OK",
+			s:    s,
+			mock: func() {
+				rows := sqlxmock.NewRows([]string{"id", "text", "author_id"}).
+					AddRow(1, "joke #1", 1)
+				mock.ExpectQuery("^SELECT id, text, author_id FROM joke WHERE id=\\$1 LIMIT 1$").
+					WithArgs(1).
+					WillReturnRows(rows)
+			},
+		},
+		{
+			name: "empty",
+			s:    s,
+			mock: func() {
+				mock.ExpectQuery("^SELECT id, text, author_id FROM joke WHERE id=\\$1 LIMIT 1$").
+					WithArgs(1).
+					WillReturnError(sql.ErrNoRows)
+			},
+		},
+		{
+			name: "returns error",
+			s:    s,
+			mock: func() {
+				mock.ExpectQuery("^SELECT id, text, author_id FROM joke WHERE id=\\$1 LIMIT 1$").
+					WithArgs(1).
+					WillReturnError(testSomeDbError)
+			},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			err := tt.s.HealthCheckJoke()
+
+			if tt.wantErr {
+				require.Error(t, err)
 			} else {
 				require.NoError(t, err)
 			}

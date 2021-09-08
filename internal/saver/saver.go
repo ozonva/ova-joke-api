@@ -4,10 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/benbjohnson/clock"
 	"sync"
 	"time"
-
-	"github.com/benbjohnson/clock"
 
 	"github.com/ozonva/ova-joke-api/internal/models"
 )

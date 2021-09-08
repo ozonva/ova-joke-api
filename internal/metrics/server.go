@@ -1,23 +1,31 @@
 package metrics
 
 import (
+	"errors"
+	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"net/http"
 
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/ozonva/ova-joke-api/internal/configs"
 )
 
-type MetricServer struct{}
+func Run(config configs.MetricsServerConfig) *http.Server {
+	router := mux.NewRouter()
+	router.Handle("/metrics", promhttp.Handler())
 
-func NewServer() *MetricServer {
-	return &MetricServer{}
-}
+	srv := &http.Server{
+		Addr:    config.Addr,
+		Handler: router,
+	}
 
-func (srv *MetricServer) Run(addr string) {
 	go func() {
-		http.Handle("/metrics", promhttp.Handler())
-		err := http.ListenAndServe(addr, nil)
+		err := srv.ListenAndServe()
 		if err != nil {
-			panic(err)
+			if !errors.Is(err, http.ErrServerClosed) {
+				panic(err)
+			}
 		}
 	}()
+
+	return srv
 }

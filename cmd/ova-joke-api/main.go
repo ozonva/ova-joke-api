@@ -1,115 +1,92 @@
 package main
 
 import (
-	"context"
-	"flag"
 	"fmt"
-	"math"
-	"net"
-	"os"
-	"strings"
-
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/opentracing/opentracing-go"
-	"github.com/opentracing/opentracing-go/log"
-	"github.com/rs/zerolog"
+	"github.com/spf13/pflag"
 	"google.golang.org/grpc"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/ozonva/ova-joke-api/internal/app/hellower"
+	"github.com/ozonva/ova-joke-api/internal/configs"
 	"github.com/ozonva/ova-joke-api/internal/flusher"
+	log "github.com/ozonva/ova-joke-api/internal/logger"
 	"github.com/ozonva/ova-joke-api/internal/metrics"
 	api "github.com/ozonva/ova-joke-api/internal/ova-joke-api"
 	"github.com/ozonva/ova-joke-api/internal/producer"
 	"github.com/ozonva/ova-joke-api/internal/repo"
 	"github.com/ozonva/ova-joke-api/internal/tracer"
-	desc "github.com/ozonva/ova-joke-api/pkg/ova-joke-api"
 )
 
 const serviceName = "ova-joke-api"
 
 var (
-	grpcPort string
-	dbHost   string
+	grpcAddr    string
+	flChunkSize int
 
-	dbPort uint
+	dbHost string
+	dbPort uint16
 	dbName string
 	dbUser string
 	dbPass string
 
 	metricsAddr string
 
-	brokerAddrsArg string
-	brokerAddrs    []string
+	brokerAddrs []string
 )
 
 func init() {
-	flag.StringVar(&grpcPort, "port", "0.0.0.0:9090", "port for gRPC api server")
-	flag.StringVar(&dbHost, "db-host", "localhost", "port for gRPC api server")
+	pflag.StringVar(&grpcAddr, "grpc.addr", "0.0.0.0:9090", "port for gRPC api server")
+	pflag.IntVar(&flChunkSize, "flusher.chunksize", 3, "storage insert batch size")
 
-	flag.UintVar(&dbPort, "db-port", 5432, "database port")
-	flag.StringVar(&dbName, "db-name", "postgres", "database name")
-	flag.StringVar(&dbUser, "db-user", "postgres", "database user name")
-	flag.StringVar(&dbPass, "db-pass", "postgres", "database users' password")
+	pflag.StringVar(&dbHost, "db.host", "localhost", "host for database")
+	pflag.Uint16Var(&dbPort, "db.port", 5432, "database port")
+	pflag.StringVar(&dbName, "db.name", "postgres", "database name")
+	pflag.StringVar(&dbUser, "db.user", "postgres", "database user name")
+	pflag.StringVar(&dbPass, "db.pass", "postgres", "database users' password")
 
-	flag.StringVar(&metricsAddr, "metrics-addr", "0.0.0.0:9093", "addr of metrics exporter api")
+	pflag.StringVar(&metricsAddr, "metrics.addr", "0.0.0.0:9093", "addr of metrics exporter api")
 
-	flag.StringVar(&brokerAddrsArg, "broker-addr", "0.0.0.0:9092", "coma separated list of brokers addrs")
+	pflag.StringSliceVar(&brokerAddrs, "broker.addrs", []string{"0.0.0.0:9092"}, "comma separated list of brokers addrs")
 }
 
-func run(_ context.Context, r *repo.JokePgRepo, f api.Flusher, m *metrics.Metrics, pr api.Producer) error {
-	listen, err := net.Listen("tcp", grpcPort)
-	if err != nil {
-		return fmt.Errorf("failed to listen: %w", err)
-	}
-
-	grpcSrv := grpc.NewServer(grpc.ChainUnaryInterceptor(newInterceptorWithTrace()))
-	desc.RegisterJokeServiceServer(grpcSrv, api.NewJokeAPI(r, f, m, pr))
-
-	if err := grpcSrv.Serve(listen); err != nil {
-		return fmt.Errorf("failed to serve: %w", err)
-	}
-
-	return nil
-}
-
-func createDB() *sqlx.DB {
-	if dbPort > math.MaxUint16 {
-		panic(fmt.Sprintf("invalid dbConn port given %d, must be compatible with uint16", dbPort))
-	}
-
-	dsn := fmt.Sprintf(
-		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		dbHost, dbPort, dbUser, dbPass, dbName,
-	)
-
-	dbConn, err := sqlx.Connect("postgres", dsn)
+func createDB(config configs.DBConfig) *sqlx.DB {
+	db, err := sqlx.Connect("postgres", config.GetDSN())
 	if err != nil {
 		panic(fmt.Sprintf("Unable to connect to database: %v\n", err))
 	}
 
-	return dbConn
+	return db
 }
 
 func createRepo(db *sqlx.DB) *repo.JokePgRepo {
 	return repo.NewJokePgRepo(db)
 }
 
-func createJokeFlusher(r *repo.JokePgRepo) *flusher.JokeFlusher {
-	flusherCap := 3
-	return flusher.NewJokeFlusher(flusherCap, r)
+func createJokeFlusher(r *repo.JokePgRepo, config configs.FlusherConfig) *flusher.JokeFlusher {
+	return flusher.NewJokeFlusher(config.ChunkSize, r)
+}
+
+func initSignalHandler() <-chan os.Signal {
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	return done
 }
 
 func main() {
-	// parse cli arguments
-	flag.Parse()
-	brokerAddrs = strings.Split(brokerAddrsArg, ",")
-
-	// configure logger
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	// read configs, env variables and flags
+	cfg, err := configs.GetConfig()
+	if err != nil {
+		panic(err)
+	}
 
 	// create database client
-	db := createDB()
+	db := createDB(cfg.DB)
 	defer func() {
 		err := db.Close()
 		if err != nil {
@@ -119,12 +96,11 @@ func main() {
 
 	// create repository (using postgres connection) and flusher (batch wrapper)
 	dbRepo := createRepo(db)
-	fl := createJokeFlusher(dbRepo)
+	fl := createJokeFlusher(dbRepo, cfg.Flusher)
 
 	// create metric storage and run handler for prometheus
 	counters := metrics.NewMetrics()
-	metricsSrv := metrics.NewServer()
-	metricsSrv.Run(metricsAddr)
+	metrics.Run(cfg.Metrics)
 
 	// create opentracing client (jaeger)
 	tr, closer := tracer.Init(serviceName)
@@ -132,7 +108,7 @@ func main() {
 	opentracing.SetGlobalTracer(tr)
 
 	// create kafka sync producer
-	pr, err := producer.NewProducer(brokerAddrs)
+	pr, err := producer.NewProducer(cfg.Broker)
 	if err != nil {
 		panic(err)
 	}
@@ -144,24 +120,22 @@ func main() {
 	}
 
 	// start api grpc server
-	if err := run(context.Background(), dbRepo, fl, counters, pr); err != nil {
+	grpcSrv := grpc.NewServer(grpc.ChainUnaryInterceptor(api.NewInterceptorWithTrace()))
+
+	go handleTermination(grpcSrv)
+
+	if err := api.Run(grpcSrv, cfg.GRPC, dbRepo, fl, counters, pr); err != nil {
 		panic(err)
 	}
 }
 
-// newInterceptorWithTrace wraps all gRPC calls with tracer's span.
-func newInterceptorWithTrace() grpc.UnaryServerInterceptor {
-	return func(
-		ctx context.Context, req interface{},
-		info *grpc.UnaryServerInfo,
-		handler grpc.UnaryHandler,
-	) (resp interface{}, err error) {
-		trace := opentracing.GlobalTracer()
-		span := trace.StartSpan(info.FullMethod)
-		span.LogFields(
-			log.String("request", fmt.Sprintf("%v", req)),
-		)
-		defer span.Finish()
-		return handler(opentracing.ContextWithSpan(ctx, span), req)
+func handleTermination(
+	grpcSrv *grpc.Server,
+) {
+	sigCh := initSignalHandler()
+	for range sigCh {
+		log.Infof("terminate signal received, gracefully terminate")
+		grpcSrv.GracefulStop()
+		log.Infof("done")
 	}
 }

@@ -9,9 +9,6 @@ lint:
 test:
 	go test -tags=test_unit -v -count=1 -race -timeout=1m ./...
 
-.PHONY: build
-build: vendor-proto .generate .build
-
 PHONY: .generate
 .generate:
 		mkdir -p swagger
@@ -50,7 +47,6 @@ vendor-proto: .vendor-proto
 			mv vendor.protogen/googleapis/google/api vendor.protogen/google &&\
 			rm -rf vendor.protogen/googleapis ;\
 		fi
-
 
 .PHONY: deps
 deps: install-go-deps

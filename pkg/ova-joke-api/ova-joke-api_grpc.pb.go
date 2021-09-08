@@ -30,6 +30,8 @@ type JokeServiceClient interface {
 	UpdateJoke(ctx context.Context, in *UpdateJokeRequest, opts ...grpc.CallOption) (*UpdateJokeResponse, error)
 	// RemoveJoke delete joke from storage.
 	RemoveJoke(ctx context.Context, in *RemoveJokeRequest, opts ...grpc.CallOption) (*RemoveJokeResponse, error)
+	// RemoveJoke delete joke from storage.
+	HealthCheckJoke(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (*HealthCheckResponse, error)
 }
 
 type jokeServiceClient struct {
@@ -94,6 +96,15 @@ func (c *jokeServiceClient) RemoveJoke(ctx context.Context, in *RemoveJokeReques
 	return out, nil
 }
 
+func (c *jokeServiceClient) HealthCheckJoke(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (*HealthCheckResponse, error) {
+	out := new(HealthCheckResponse)
+	err := c.cc.Invoke(ctx, "/ozonva.ova_joke_api.JokeService/HealthCheckJoke", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // JokeServiceServer is the server API for JokeService service.
 // All implementations must embed UnimplementedJokeServiceServer
 // for forward compatibility
@@ -110,6 +121,8 @@ type JokeServiceServer interface {
 	UpdateJoke(context.Context, *UpdateJokeRequest) (*UpdateJokeResponse, error)
 	// RemoveJoke delete joke from storage.
 	RemoveJoke(context.Context, *RemoveJokeRequest) (*RemoveJokeResponse, error)
+	// RemoveJoke delete joke from storage.
+	HealthCheckJoke(context.Context, *HealthCheckRequest) (*HealthCheckResponse, error)
 	mustEmbedUnimplementedJokeServiceServer()
 }
 
@@ -134,6 +147,9 @@ func (UnimplementedJokeServiceServer) UpdateJoke(context.Context, *UpdateJokeReq
 }
 func (UnimplementedJokeServiceServer) RemoveJoke(context.Context, *RemoveJokeRequest) (*RemoveJokeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveJoke not implemented")
+}
+func (UnimplementedJokeServiceServer) HealthCheckJoke(context.Context, *HealthCheckRequest) (*HealthCheckResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HealthCheckJoke not implemented")
 }
 func (UnimplementedJokeServiceServer) mustEmbedUnimplementedJokeServiceServer() {}
 
@@ -256,6 +272,24 @@ func _JokeService_RemoveJoke_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _JokeService_HealthCheckJoke_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HealthCheckRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JokeServiceServer).HealthCheckJoke(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ozonva.ova_joke_api.JokeService/HealthCheckJoke",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JokeServiceServer).HealthCheckJoke(ctx, req.(*HealthCheckRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // JokeService_ServiceDesc is the grpc.ServiceDesc for JokeService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -286,6 +320,10 @@ var JokeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemoveJoke",
 			Handler:    _JokeService_RemoveJoke_Handler,
+		},
+		{
+			MethodName: "HealthCheckJoke",
+			Handler:    _JokeService_HealthCheckJoke_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -2,13 +2,12 @@ package saver
 
 import (
 	"context"
+	"github.com/stretchr/testify/require"
+	"go.uber.org/goleak"
 	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
-
-	"github.com/stretchr/testify/require"
-	"go.uber.org/goleak"
 
 	"github.com/ozonva/ova-joke-api/internal/models"
 )

@@ -4,10 +4,9 @@
 package utils
 
 import (
+	"github.com/stretchr/testify/require"
 	"reflect"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 func Test_chunkSlice(t *testing.T) {

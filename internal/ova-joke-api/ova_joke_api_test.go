@@ -12,7 +12,7 @@ import (
 
 	mocks "github.com/ozonva/ova-joke-api/internal/mocks/service"
 	"github.com/ozonva/ova-joke-api/internal/models"
-	ova_joke_api "github.com/ozonva/ova-joke-api/internal/ova-joke-api"
+	api "github.com/ozonva/ova-joke-api/internal/ova-joke-api"
 	pb "github.com/ozonva/ova-joke-api/pkg/ova-joke-api"
 )
 
@@ -48,7 +48,7 @@ var _ = Describe("OvaJokeApi", func() {
 		mockMetrics = mocks.NewMockMetrics(ctrl)
 		mockProducer = mocks.NewMockProducer(ctrl)
 
-		srv = ova_joke_api.NewJokeAPI(mockRepo, mockFlusher, mockMetrics, mockProducer)
+		srv = api.NewJokeAPI(mockRepo, mockFlusher, mockMetrics, mockProducer)
 		ctx = context.TODO()
 		jokes = []models.Joke{{ID: 3, Text: "joke #3", AuthorID: 33}}
 		jokeID = 3
@@ -286,6 +286,35 @@ var _ = Describe("OvaJokeApi", func() {
 				Expect(fj.Text).To(BeEquivalentTo(failedJokes[i].Text))
 				Expect(fj.AuthorId).To(BeEquivalentTo(failedJokes[i].AuthorID))
 			}
+		})
+	})
+
+	Context("HealthCheck joke", func() {
+		It("successfully done", func() {
+			mockRepo.EXPECT().HealthCheckJoke().Times(1).Return(nil)
+			resp, err := srv.HealthCheckJoke(ctx, &pb.HealthCheckRequest{})
+
+			Expect(err).Should(Succeed())
+			Expect(resp.Grpc).To(BeEquivalentTo(1))
+			Expect(resp.Database).To(BeEquivalentTo(1))
+		})
+
+		It("successfully but no results", func() {
+			mockRepo.EXPECT().HealthCheckJoke().Times(1).Return(nil)
+			resp, err := srv.HealthCheckJoke(ctx, &pb.HealthCheckRequest{})
+
+			Expect(err).Should(Succeed())
+			Expect(resp.Grpc).To(BeEquivalentTo(1))
+			Expect(resp.Database).To(BeEquivalentTo(int64(1)))
+		})
+
+		It("failed with error", func() {
+			mockRepo.EXPECT().HealthCheckJoke().Times(1).Return(errTestService)
+			resp, err := srv.HealthCheckJoke(ctx, &pb.HealthCheckRequest{})
+
+			Expect(err).Should(Succeed())
+			Expect(resp.Grpc).To(BeEquivalentTo(1))
+			Expect(resp.Database).To(BeEquivalentTo(0))
 		})
 	})
 })

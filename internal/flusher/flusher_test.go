@@ -3,11 +3,10 @@ package flusher_test
 import (
 	"context"
 	"fmt"
-	"strconv"
-
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"strconv"
 
 	"github.com/ozonva/ova-joke-api/internal/flusher"
 	mock "github.com/ozonva/ova-joke-api/internal/mocks/flusher"
