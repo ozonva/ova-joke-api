@@ -17,7 +17,7 @@ type MockFlusher struct {
 	FlushCnt int32
 }
 
-func (f *MockFlusher) Flush([]models.Joke) []models.Joke {
+func (f *MockFlusher) Flush(_ context.Context, _ []models.Joke) []models.Joke {
 	atomic.AddInt32(&(f.FlushCnt), 1)
 	return nil
 }

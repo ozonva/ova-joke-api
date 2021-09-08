@@ -77,12 +77,22 @@ func (j JokePgRepo) DescribeJoke(jokeID models.JokeID) (*models.Joke, error) {
 
 // RemoveJoke from database where id=jokeID.
 func (j JokePgRepo) RemoveJoke(jokeID models.JokeID) error {
-	_, err := j.db.NamedExec(
-		fmt.Sprintf("DELETE FROM %s WHERE id=:id", jokeTblName),
-		map[string]interface{}{
-			"id": jokeID,
-		},
+	_, err := j.db.Exec(
+		fmt.Sprintf("DELETE FROM %s WHERE id=$1", jokeTblName),
+		jokeID,
 	)
+	return err
+}
+
+// UpdateJoke with from database where id=jokeID.
+func (j JokePgRepo) UpdateJoke(joke models.Joke) error {
+	_, err := j.db.NamedExec(
+		fmt.Sprintf("UPDATE %s SET text=:text, author_id=:author_id WHERE id=:id", jokeTblName),
+		map[string]interface{}{
+			"id":        joke.ID,
+			"text":      joke.Text,
+			"author_id": joke.AuthorID,
+		})
 	return err
 }
 

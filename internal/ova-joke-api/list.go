@@ -32,5 +32,6 @@ func (j *JokeAPI) ListJoke(_ context.Context, req *pb.ListJokeRequest) (*pb.List
 	}
 
 	log.Info().Msgf("list of %d element showed", len(resp.Jokes))
+	j.metrics.ListJokeCounterInc()
 	return resp, nil
 }
